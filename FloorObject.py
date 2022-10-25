@@ -3,9 +3,12 @@ import random
 # import WaterObject
 GameWindow_WITDH , GameWindow_HEIGHT = 600,600
 
+# x = [GameWindow_WITDH//2] # maptool
+# y = [GameWindow_HEIGHT//20] # maptool
 # floor 를 저장 할 값
-x = [GameWindow_WITDH//2]
-y = [GameWindow_HEIGHT//20]
+x = [GameWindow_WITDH//2,136,420,225,343,359,360,238,372,415,154,333]
+y = [GameWindow_HEIGHT//20,198,307,407,516,649,749,959,1064,1180,1312,1433]
+floortype = [1,1,1,1,3,3,3,4,3,3,3,4,]
 # while True:       # map tool 용 완성시 주석 해제
 #     r = random.randint(0,1)
 #     if r == 0: 
@@ -21,25 +24,29 @@ ycount = 0
 # Floor index : 플레이어가 어디발판에 있는지 확인
 level = 0
 class FLOOR:
-    def __init__(self,x=None,y=None,floortype = None):
-        # global x,y
+    # def __init__(self,x=None,y=None,floortype = None): # maptool
+    def __init__(self):
+        global x,y , floortype
         global xcount,ycount,level
-        if x == None: x = GameWindow_WITDH//2
-        if y == None: y = GameWindow_HEIGHT//20
-        if floortype == None:
-            floortype = random.randint(0,5) +1 
-        self.image = load_image("Floor/floor_0{0}.png".format(floortype))
-        self.floortype = floortype 
+        # if x == None: x = GameWindow_WITDH//2 # maptool
+        # if y == None: y = GameWindow_HEIGHT//20
+        # if floortype == None:
+        #     floortype = random.randint(0,5) +1 
+        self.floortype = floortype[xcount]
+        # self.floortype = floortype # maptool
         if(xcount == 0):
             self.image = load_image("Floor\main_floor_1.png")
+        else:
+            self.image = load_image("Floor/floor_0{0}.png".format(floortype[xcount]))
+            # self.image = load_image("Floor/floor_0{0}.png".format(floortype)) # maptool
         self.level = level
         level += 1
         # floor 의 위치
-        # self.xPos = x[xcount]
-        self.xPos = x # map tool
+        self.xPos = x[xcount]
+        # self.xPos = x # map tool
         xcount += 1
-        # self.yPos = y[ycount]
-        self.yPos = y # map tool
+        self.yPos = y[ycount]
+        # self.yPos = y # map tool
         ycount += 1
         # floor 의 영역
         self.x1 ,self.y1 = self.xPos - self.image.w//2 + 10, self.yPos + self.image.h//2

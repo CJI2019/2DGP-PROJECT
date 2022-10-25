@@ -17,7 +17,7 @@ BackGroundHeight = 0
 # 객체 생성
 Water = WaterObject.WATER()
 floors = [FloorObject.FLOOR() for i in range(FloorObject.SizeOfFloor())]
-walls = [ ]
+walls = [WallObject.WALL() for i in range(WallObject.SizeOfWall())]
 Player = PlayerObject.PLAYER() 
 Player.y = (floors[0].y1) + (Player.Right_Idle.h//2) 
 Player.x1, Player.y1 = Player.x - (Player.Right_Idle.w//8), Player.y + (Player.Right_Idle.h//2)

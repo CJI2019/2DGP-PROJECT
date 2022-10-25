@@ -1,14 +1,24 @@
 from pico2d import *
 import PlayerObject
+# x = []
+# y = []
+
+x = [433,114] # maptool
+y = [777,1355]
+xcount,ycount = 0,0 
 
 class WALL:
-    def __init__(self,x,y):
+    # def __init__(self,x,y): # maptool
+    def __init__(self):
+        # global x,y
+        global xcount,ycount
         self.image = load_image('wall.png')
         print("생성")
-        self.x = x
-        self.y = y
-        self.x1 , self.y1= x - (self.image.w//2) , y + (self.image.h//2)
-        self.x2 , self.y2= x + (self.image.w//2) , y - (self.image.h//2)
+        self.x = x[xcount]; xcount += 1
+        self.y = y[ycount]; ycount += 1
+        # self.x = x; self.y = y
+        self.x1 , self.y1= self.x - (self.image.w//2) , self.y + (self.image.h//2)
+        self.x2 , self.y2= self.x + (self.image.w//2) , self.y - (self.image.h//2)
         # 화면에 그려질지 말지 플레이어와 부딫히면 그려짐.
         self.status = False
     def Draw(self):
@@ -39,3 +49,7 @@ class WALL:
             player.y1 = player.y + player.Right_Idle.h//2
             player.Wallpoint = index
             print("충돌")
+
+
+def SizeOfWall():
+    return len(x)

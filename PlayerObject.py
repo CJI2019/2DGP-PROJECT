@@ -247,8 +247,8 @@ def KeyDown_event(floors,player,walls): # map tool variable
             floortype = 4
         elif event.type == SDL_KEYDOWN and event.key == SDLK_5:
             floortype = 5
-        elif event.type == SDL_KEYDOWN and event.key == SDLK_F1: # 현재 플로어 정보 출력
-            print('\nx 좌표 출력')
+        elif event.type == SDL_KEYDOWN and event.key == SDLK_KP_PLUS: # 현재 플로어 정보 출력
+            print('\nFloor x 좌표 출력')
             for floor in floors:
                 print(floor.xPos,end = ',')
             print('\ny 좌표 출력')
@@ -257,6 +257,12 @@ def KeyDown_event(floors,player,walls): # map tool variable
             print('\n이미지 타입 출력')
             for floor in floors:
                 print(floor.floortype,end = ',') 
+            print('\nWall x 좌표 출력')
+            for wall in walls:
+                print(wall.x,end = ',')
+            print('\ny 좌표 출력')
+            for wall in walls:
+                print(wall.y+(100*player.level),end = ',')
             print('\n') # map tool end
         elif (event.type == SDL_KEYDOWN):
             if(event.key == SDLK_RIGHT):
