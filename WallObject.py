@@ -31,11 +31,23 @@ class WALL:
         PlayerObject.xPos < 0):
             player.WallCrash()
             print("충돌")
+            elif PlayerObject.xPos == 0 :
+                player.x += 1; player.x1 += 1 ; player.x2 += 1
+                print("충돌")
         elif (player.x2 > self.x1 and player.x2 < self.x2 and # 우
         (player.y1+player.y2)//2 < self.y1 and (player.y1+player.y2)//2 > self.y2 and
         PlayerObject.xPos > 0):
             player.WallCrash()
             print("충돌")
+            elif PlayerObject.xPos == 0 :
+                player.x -= 1; player.x1 -= 1 ; player.x2 -= 1
+                print("충돌")
+        elif ((player.x2+player.x1)//2 > self.x1 and (player.x2+player.x1)//2 < self.x2 and # 중앙
+        (player.y1+player.y2)//2 < self.y1 and (player.y1+player.y2)//2 > self.y2):
+            if (self.x1 + self.x2)//2 > (player.x2+player.x1)//2:
+                player.x -= 5; player.x1 -= 5 ; player.x2 -= 5
+            elif (self.x1 + self.x2)//2 < (player.x2+player.x1)//2:
+                player.x += 5; player.x1 += 5 ; player.x2 += 5
         elif ((player.x1+player.x2)//2 > self.x1 and (player.x1+player.x2)//2 < self.x2 and # 상
         player.y1 < self.y1 and player.y1 > self.y2 ):
             if PlayerObject.yPos != 0:
