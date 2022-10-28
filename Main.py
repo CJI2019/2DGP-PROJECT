@@ -14,16 +14,16 @@ import MonsterObject
 BackGround = load_image("back_2_2000.png")
 BackGroundHeight = 0
 
-
+""""""""""""""""""""""""
 # 객체 생성
 Water = WaterObject.WATER()
 floors = [FloorObject.FLOOR() for i in range(FloorObject.SizeOfFloor())]
 walls = [WallObject.WALL() for i in range(WallObject.SizeOfWall())]
-Player = PlayerObject.PLAYER() 
-Player.y = (floors[0].y1) + (Player.Right_Idle.h//2) 
-Player.x1, Player.y1 = Player.x - (Player.Right_Idle.w//8), Player.y + (Player.Right_Idle.h//2)
-Player.x2, Player.y2 = Player.x + (Player.Right_Idle.w//8), Player.y - (Player.Right_Idle.h//2)
+Player = PlayerObject.PLAYER()
+# 플레이어 y 값 초기화 발판으로 맞춤
+Player.y = (floors[0].y1) + (Player.Right_Idle.h//2)
 monsters = [MonsterObject.MONSTER()]
+""""""""""""""""""""""""
 
 while PlayerObject.play:
     clear_canvas()
@@ -39,9 +39,12 @@ while PlayerObject.play:
         wall.Draw()
     for monster in monsters:
         monster.Draw()
+        monster.update(floors)
+
     Player.Player_Movement(floors,walls)
     PlayerObject.KeyDown_event(floors,Player,walls)
     FloorObject.FloorChange(Player,floors,Water,walls)
+    FloorObject.FloorChange(Player,floors,Water,walls,monsters)
     
     Water.drawAupdate()
     Water.Crash(Player)

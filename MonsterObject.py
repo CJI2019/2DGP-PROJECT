@@ -49,3 +49,13 @@ class MONSTER:
             self.y2 = self.y - self.right_move_image.h//2
         if floors[self.floorlevel].x1 > self.x or floors[self.floorlevel].x2 < self.x:
             self.floorlevel -= 1
+
+    def floorchange(self, FloorLevelAnimeCount, FloorLevelAnimeSpeed):
+        if FloorLevelAnimeCount > 0:
+            self.y += FloorLevelAnimeSpeed
+            self.y1 += FloorLevelAnimeSpeed
+            self.y2 += FloorLevelAnimeSpeed
+        else:
+            self.y -= FloorLevelAnimeSpeed
+            self.y1 -= FloorLevelAnimeSpeed
+            self.y2 -= FloorLevelAnimeSpeed

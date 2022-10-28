@@ -50,7 +50,8 @@ class FLOOR:
         ycount += 1
         # floor 의 영역
         self.x1 ,self.y1 = self.xPos - self.image.w//2 + 10, self.yPos + self.image.h//2
-        self.x2 ,self.y2 = self.xPos + self.image.w//2 - 10, self.yPos - self.image.h//2
+        self.x2 ,self.y2 = self.xPos + self.image.w//2 - 10, self.yPos
+        # self.x2 ,self.y2 = self.xPos + self.image.w//2 - 10, self.yPos - self.image.h//2
     def Draw(self):
         self.image.draw(self.xPos,self.yPos)
 
@@ -65,7 +66,7 @@ FloorLevelAnimeCount = 0
 # floor 에 따른 애니메이션 속도
 FloorLevelAnimeSpeed = 10 
 
-def FloorChange(Player,floors,Water,walls):
+def FloorChange(Player,floors,Water,walls,monsters):
     global Player_Floor_Level ,FloorLevelAnimeCount,FloorLevelAnimeSpeed
 
     if (Player_Floor_Level != Player.CompliteLevel and FloorLevelAnimeCount == 0):
@@ -90,6 +91,8 @@ def FloorChange(Player,floors,Water,walls):
                 wall.y -= FloorLevelAnimeSpeed
                 wall.y1 -= FloorLevelAnimeSpeed
                 wall.y2 -= FloorLevelAnimeSpeed
+        for monster in monsters:
+            monster.floorchange(FloorLevelAnimeCount,FloorLevelAnimeSpeed)
         if FloorLevelAnimeCount > 0:
             Water.y += FloorLevelAnimeSpeed
         else :
