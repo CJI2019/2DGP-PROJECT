@@ -22,10 +22,15 @@ walls = [WallObject.WALL() for i in range(WallObject.SizeOfWall())]
 Player = PlayerObject.PLAYER()
 # 플레이어 y 값 초기화 발판으로 맞춤
 Player.y = (floors[0].y1) + (Player.Right_Idle.h//2)
-monsters = [MonsterObject.MONSTER()]
+if len(floors) > 3:
+    monsters = [MonsterObject.MONSTER(3)]
+else:
+    monsters = []
 """"""""""""""""""""""""
-
+# 타이머 생성
+timer = 0
 while PlayerObject.play:
+    timer += 1
     clear_canvas()
     BackGround.clip_draw(0,(int)(BackGroundHeight),GameWindow_WITDH,GameWindow_HEIGHT
                     ,GameWindow_WITDH//2,GameWindow_HEIGHT//2)
@@ -41,12 +46,16 @@ while PlayerObject.play:
         monster.Draw()
         monster.update(floors)
 
+    if len(floors) > Player.level + 3 and timer % 1000 == 0:
+        monsters += [MonsterObject.MONSTER(floors[Player.level+3].level)]
+
     Player.Player_Movement(floors,walls)
     PlayerObject.KeyDown_event(floors,Player,walls)
     FloorObject.FloorChange(Player,floors,Water,walls)
     FloorObject.FloorChange(Player,floors,Water,walls,monsters)
     
     Water.drawAupdate()
+    # Water.drawAupdate()
     Water.Crash(Player)
     update_canvas()
 

@@ -6,16 +6,15 @@ from pico2d import *
 class MONSTER:
     # animation delaytime
     delayframe = 2
-    def __init__(self):
+    def __init__(self,floorlevel):
         self.left_move_image = load_image('Monster/ghost_left.png')
         self.right_move_image = load_image('Monster/ghost_right.png')
-        self.x , self.y= 300 , 600
+        self.x , self.y= random.randint(0,600) , 600
         self.x1 , self.y1= self.x - (self.left_move_image.w//14) , self.y + (self.left_move_image.h//2)
         self.x2 , self.y2= self.x + (self.left_move_image.w//14) , self.y - (self.left_move_image.h//2)
         self.frame = 0
         self.dir = 0
-        # self.floorlevel = random.randint(0,5)
-        self.floorlevel = 3
+        self.floorlevel = floorlevel
     def Draw(self):
         for i in range(0,13):
             if self.frame < MONSTER.delayframe * (i+1):
