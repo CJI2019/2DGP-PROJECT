@@ -2,7 +2,7 @@ from pico2d import *
 import WallObject
 GameWindow_WITDH ,GameWindow_HEIGHT  = 600 , 600
 # 점프 높이
-JUMPHEIGHT = 14
+JUMPHEIGHT = 15
 
 JUMPKEYDOWN = False
 class PLAYER:
@@ -28,12 +28,23 @@ class PLAYER:
         self.level = 0
         # floor 확정
         self.CompliteLevel = 0
+        self.status = None
+        self.stoptime = 0
     def CoordinateInput(self,val):
         self.y = val
         self.y1 = self.y + (self.Right_Idle.h//2);self.y2 = self.y - (self.Right_Idle.h//2)
-    def WallCrash(self): # 벽에 부딪히면 호출
+    def WallCrash(self): # 벽 장애물에 부딪히면 호출
         global xPos
         self.x -= xPos * 4 ; self.x1 -= xPos * 4; self.x2 -= xPos * 4
+    def MonsterCrash(self,monster): # 몬스터와 충돌
+        global dir ,MoveRight,MoveLeft , xPos
+        if (monster.x1 < self.x and self.x < monster.x2 and monster.y2 < self.y and self.y < monster.y1):
+            if(self.stoptime == 0):
+                print('몬스터 충돌')
+                self.status = 'monstercrash' ; self.stoptime = 200
+        # elif (monster.x1 < self.x2 and self.x2 < monster.x2 and monster.y2 < self.y and self.y < monster.y1):
+        # elif (monster.x1 < self.x and self.x < monster.x2 and monster.y2 < self.y1 and self.y1 < monster.y1):
+        # elif (monster.x1 < self.x and self.x < monster.x2 and monster.y2 < self.y2 and self.y2 < monster.y1):
 
     def Player_Movement(self,floors,walls):
         global MoveRight , MoveLeft ,xPos,yPos,frame,FALLING,dir,JUMPKEYDOWN
@@ -90,8 +101,12 @@ class PLAYER:
             delay(0.01)
         
         # player 좌표 이동
-        self.x += xPos * 4
-        self.x1 += xPos * 4; self.x2 += xPos * 4
+
+        if self.stoptime != 0:
+            self.stoptime -= 1
+        else:
+            self.x += xPos * 4
+            self.x1 += xPos * 4; self.x2 += xPos * 4
         if self.x2 > GameWindow_WITDH or self.x1 < 0: 
             self.WallCrash()
         # enumerate 는 리스트의 인덱스,원소 형식의 튜플을 넘김
@@ -107,10 +122,10 @@ class PLAYER:
                 self.y += yPos ; self.y1 += yPos ;self.y2 += yPos 
                 # 점프로 올라갈때 벽에 부딪히면 못올라가게.
                 if (self.level+1 < len(floors)):
-                    if(floors[self.level+1].y2 < self.y + self.Right_Jump.h//2 
-                    and floors[self.level+1].y1 > self.y + self.Right_Jump.h//2 
+                    if(floors[self.level+1].y2 < self.y + self.Right_Jump.h//2
+                    and floors[self.level+1].y1 > self.y + self.Right_Jump.h//2
                     and floors[self.level+1].x1 < self.x and floors[self.level+1].x2 > self.x):
-                        self.y -= yPos;self.y1 -= yPos ;self.y2 -= yPos 
+                        self.y -= yPos;self.y1 -= yPos ;self.y2 -= yPos
             elif FALLING == True: # 점프 이후 떨어지는 애니메이션
                 if yPos <= JUMPHEIGHT : # 체공 시간 이후 떨어지게
                     self.y -= yPos ; self.y1 -= yPos ;self.y2 -= yPos
@@ -172,7 +187,7 @@ class PLAYER:
                     FALLING = True
                     yPos = JUMPHEIGHT + 7 # + 7 은 공중에서 체공하는 시간정도를 나타냄.
         elif (not JUMPKEYDOWN and self.Wallpoint == -1) : # JUMPKEYDOWN 이 False 일때 벽위에 있지 않을때
-            if(floors[self.level].x1 > self.x + (self.Right_Run.w//10)//2 
+            if(floors[self.level].x1 > self.x + (self.Right_Run.w//10)//2
             or floors[self.level].x2 < self.x - (self.Right_Run.w//10)//2):
                 JUMPKEYDOWN , FALLING = True , True
                 yPos = JUMPHEIGHT
@@ -276,7 +291,7 @@ def KeyDown_event(floors,player,walls): # map tool variable
                 Current_KeyDown_List[1] = 1
                 xPos -= 1
             if(event.key == SDLK_SPACE):
-                if yPos != 0:
+                if yPos != 0 or player.stoptime != 0:
                     continue
                 yPos = JUMPHEIGHT
                 JUMPKEYDOWN = True

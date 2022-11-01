@@ -9,7 +9,6 @@ import PlayerObject
 import FloorObject
 import WaterObject
 import WallObject
-
 import MonsterObject
 BackGround = load_image("back_2_2000.png")
 BackGroundHeight = 0
@@ -44,6 +43,7 @@ while PlayerObject.play:
         wall.Draw()
     for monster in monsters:
         monster.Draw()
+        Player.MonsterCrash(monster)
         monster.update(floors)
 
     if len(floors) > Player.level + 3 and timer % 1000 == 0:
@@ -51,10 +51,8 @@ while PlayerObject.play:
 
     Player.Player_Movement(floors,walls)
     PlayerObject.KeyDown_event(floors,Player,walls)
-    FloorObject.FloorChange(Player,floors,Water,walls)
     FloorObject.FloorChange(Player,floors,Water,walls,monsters)
     
-    Water.drawAupdate()
     # Water.drawAupdate()
     Water.Crash(Player)
     update_canvas()
