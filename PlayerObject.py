@@ -17,6 +17,8 @@ class PLAYER:
         self.Right_Jump = load_image('Player\Player_right_jump.png')
         self.Left_Fall = load_image('Player\Player_left_fall.png')
         self.Right_Fall = load_image('Player\Player_right_fall.png')
+        self.Right_Crash = load_image('Player\Player_right_crash.png')
+        self.Left_Crash = load_image('Player\Player_left_crash.png')
         self.x = 300
         self.y = 300
         # 좌 상
@@ -49,8 +51,13 @@ class PLAYER:
     def Player_Movement(self,floors,walls):
         global MoveRight , MoveLeft ,xPos,yPos,frame,FALLING,dir,JUMPKEYDOWN
         global play
-
-        if(JUMPKEYDOWN == False):
+        if self.status == 'monstercrash':
+            if (dir == 0):
+                self.Right_Crash.draw(self.x,self.y-(self.Right_Run.h//4))
+            elif (dir == 1):
+                self.Left_Crash.draw(self.x,self.y-(self.Right_Run.h//4))
+            delay(0.01)
+        elif(JUMPKEYDOWN == False):
             if(MoveRight == True and MoveLeft == False):
                 frame += 1
                 self.Right_Run.clip_draw(((frame//2) % 10)*(self.Right_Run.w//10), 0, self.Right_Run.w//10, self.Right_Run.h,self.x,self.y)
@@ -104,6 +111,7 @@ class PLAYER:
 
         if self.stoptime != 0:
             self.stoptime -= 1
+            if self.stoptime == 0: self.status = None
         else:
             self.x += xPos * 4
             self.x1 += xPos * 4; self.x2 += xPos * 4
