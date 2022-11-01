@@ -43,7 +43,7 @@ class PLAYER:
         if (monster.x1 < self.x and self.x < monster.x2 and monster.y2 < self.y and self.y < monster.y1):
             if(self.stoptime == 0):
                 print('몬스터 충돌')
-                self.status = 'monstercrash' ; self.stoptime = 200
+                self.status = 'monstercrash' ; self.stoptime = 20
         # elif (monster.x1 < self.x2 and self.x2 < monster.x2 and monster.y2 < self.y and self.y < monster.y1):
         # elif (monster.x1 < self.x and self.x < monster.x2 and monster.y2 < self.y1 and self.y1 < monster.y1):
         # elif (monster.x1 < self.x and self.x < monster.x2 and monster.y2 < self.y2 and self.y2 < monster.y1):
@@ -109,10 +109,7 @@ class PLAYER:
         
         # player 좌표 이동
 
-        if self.stoptime != 0:
-            self.stoptime -= 1
-            if self.stoptime == 0: self.status = None
-        else:
+        if self.stoptime == 0:
             self.x += xPos * 4
             self.x1 += xPos * 4; self.x2 += xPos * 4
         if self.x2 > GameWindow_WITDH or self.x1 < 0: 
@@ -289,11 +286,17 @@ def KeyDown_event(floors,player,walls): # map tool variable
             print('\n') # map tool end
         elif (event.type == SDL_KEYDOWN):
             if(event.key == SDLK_RIGHT):
+                if player.stoptime != 0:
+                    player.stoptime -= 1
+                    if player.stoptime == 0: player.status = None
                 MoveRight ,MoveLeft = True ,False
                 dir = 0
                 Current_KeyDown_List[0] = 1
                 xPos += 1
             if(event.key == SDLK_LEFT):
+                if player.stoptime != 0:
+                    player.stoptime -= 1
+                    if player.stoptime == 0: player.status = None
                 MoveRight ,MoveLeft = False , True
                 dir = 1
                 Current_KeyDown_List[1] = 1
