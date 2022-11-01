@@ -19,6 +19,9 @@ class PLAYER:
         self.Right_Fall = load_image('Player\Player_right_fall.png')
         self.Right_Crash = load_image('Player\Player_right_crash.png')
         self.Left_Crash = load_image('Player\Player_left_crash.png')
+
+        self.Right_key = load_image('left_key.png')
+        self.Left_key = load_image('right_key.png')
         self.x = 300
         self.y = 300
         # 좌 상
@@ -53,8 +56,10 @@ class PLAYER:
         global play
         if self.status == 'monstercrash':
             if (dir == 0):
+                self.Right_key.draw(self.x,self.y+(self.Right_Run.h//2))
                 self.Right_Crash.draw(self.x,self.y-(self.Right_Run.h//4))
             elif (dir == 1):
+                self.Left_key.draw(self.x,self.y+(self.Right_Run.h//2))
                 self.Left_Crash.draw(self.x,self.y-(self.Right_Run.h//4))
             delay(0.01)
         elif(JUMPKEYDOWN == False):
