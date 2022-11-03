@@ -10,6 +10,7 @@ import FloorObject
 import WaterObject
 import WallObject
 import MonsterObject
+import skill
 BackGround = load_image("back_2_2000.png")
 BackGroundHeight = 0
 
@@ -19,6 +20,7 @@ Water = WaterObject.WATER()
 floors = [FloorObject.FLOOR() for i in range(FloorObject.SizeOfFloor())]
 walls = [WallObject.WALL() for i in range(WallObject.SizeOfWall())]
 Player = PlayerObject.PLAYER()
+Skill = skill.SKILL()
 # 플레이어 y 값 초기화 발판으로 맞춤
 Player.y = (floors[0].y1) + (Player.Right_Idle.h//2)
 if len(floors) > 3:
@@ -44,17 +46,27 @@ while PlayerObject.play:
     for monster in monsters:
         monster.Draw()
         Player.MonsterCrash(monster)
-        monster.update(floors)
 
     if len(floors) > Player.level + 3 and timer % 1000 == 0:
         monsters += [MonsterObject.MONSTER(floors[Player.level+3].level)]
 
     Player.Player_Movement(floors,walls)
-    PlayerObject.KeyDown_event(floors,Player,walls)
+    PlayerObject.KeyDown_event(floors,Player,walls,Skill)
+
     FloorObject.FloorChange(Player,floors,Water,walls,monsters)
     
-    # Water.drawAupdate()
-    Water.Crash(Player)
+    Water.draw()
+
+    # update
+    Skill.update()
+    # timestop 스킬을 사용했으면 update 밑 객체들은 업데이트 안함
+    if Skill.skill_state[0] == None:
+        # print(Skill.skill_state[0])
+        Water.Crash(Player)
+        Water.update()
+        for monster in monsters:
+            monster.update(floors)
+
     update_canvas()
 
 close_canvas()
