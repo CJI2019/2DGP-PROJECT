@@ -5,7 +5,9 @@ class SKILL:
         # 스킬 쿨타임
         self.cooltime = [0,0,0]
         self.skill_state = [None,None,None]
+        # 시간정지 시간
         self.skill_timestop_duration = 500
+        # 무적 시간
         self.nodamegetime = 0
     #   시간 정지 스킬 사용
     def skill_timestop(self):
@@ -24,7 +26,8 @@ class SKILL:
 
     def skill_godmod(self):
         print("godmod")
-        self.cooltime[1] = 100
+        self.cooltime[1] = 1000
+        self.nodamegetime = 300
         self.skill_state[1] = 'godmod'
 
     def skill_explosion(self):

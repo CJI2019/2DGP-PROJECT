@@ -313,6 +313,8 @@ def KeyDown_event(floors,player,walls,skill): # map tool variable
                 JUMPKEYDOWN = True
             if event.key == SDLK_a:
                 skill.skill_timestop()
+            if event.key == SDLK_s:
+                skill.skill_godmod()
         elif (event.type == SDL_KEYUP):
             if(event.key == SDLK_RIGHT):
                 Current_KeyDown_Status()

@@ -63,7 +63,8 @@ while PlayerObject.play:
     # timestop 스킬을 사용했으면 update 밑 객체들은 업데이트 안함
     if Skill.skill_state[0] == None:
         # print(Skill.skill_state[0])
-        Water.Crash(Player)
+        if Skill.nodamegetime == 0 :
+            Water.Crash(Player)
         Water.update()
         for monster in monsters:
             monster.update(floors)
