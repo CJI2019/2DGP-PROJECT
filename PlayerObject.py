@@ -293,7 +293,9 @@ def KeyDown_event(floors,player,walls,skill): # map tool variable
             if(event.key == SDLK_RIGHT):
                 if player.stoptime != 0:
                     player.stoptime -= 1
-                    if player.stoptime == 0: player.status = None
+                    if player.stoptime == 0:
+                        player.status = None
+                        skill.nodamegetime = 100
                 MoveRight ,MoveLeft = True ,False
                 dir = 0
                 Current_KeyDown_List[0] = 1
@@ -301,7 +303,9 @@ def KeyDown_event(floors,player,walls,skill): # map tool variable
             if(event.key == SDLK_LEFT):
                 if player.stoptime != 0:
                     player.stoptime -= 1
-                    if player.stoptime == 0: player.status = None
+                    if player.stoptime == 0:
+                        player.status = None
+                        skill.nodamegetime = 100
                 MoveRight ,MoveLeft = False , True
                 dir = 1
                 Current_KeyDown_List[1] = 1

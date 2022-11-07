@@ -45,7 +45,8 @@ while PlayerObject.play:
         wall.Draw()
     for monster in monsters:
         monster.Draw()
-        Player.MonsterCrash(monster)
+        if Skill.nodamegetime == 0:
+            Player.MonsterCrash(monster)
 
     if len(floors) > Player.level + 3 and timer % 1000 == 0:
         monsters += [MonsterObject.MONSTER(floors[Player.level+3].level)]

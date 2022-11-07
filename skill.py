@@ -6,7 +6,7 @@ class SKILL:
         self.cooltime = [0,0,0]
         self.skill_state = [None,None,None]
         self.skill_timestop_duration = 500
-
+        self.nodamegetime = 0
     #   시간 정지 스킬 사용
     def skill_timestop(self):
         if self.cooltime[0] == 0:
@@ -39,3 +39,4 @@ class SKILL:
             if cooltime != 0:
                 # print(cooltime)
                 self.cooltime[index] -= 1
+        if self.nodamegetime != 0 : self.nodamegetime -= 1
