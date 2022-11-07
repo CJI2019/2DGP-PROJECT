@@ -47,10 +47,6 @@ class PLAYER:
             if(self.stoptime == 0):
                 print('몬스터 충돌')
                 self.status = 'monstercrash' ; self.stoptime = 20
-        # elif (monster.x1 < self.x2 and self.x2 < monster.x2 and monster.y2 < self.y and self.y < monster.y1):
-        # elif (monster.x1 < self.x and self.x < monster.x2 and monster.y2 < self.y1 and self.y1 < monster.y1):
-        # elif (monster.x1 < self.x and self.x < monster.x2 and monster.y2 < self.y2 and self.y2 < monster.y1):
-
     def Player_Movement(self,floors,walls):
         global MoveRight , MoveLeft ,xPos,yPos,frame,FALLING,dir,JUMPKEYDOWN
         global play

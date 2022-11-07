@@ -36,12 +36,7 @@ class MONSTER:
             if self.x < 0:
                 self.dir = 0
         self.y -= 1; self.y1 -= 1; self.y2 -= 1
-        # for floor in floors:
-        #     if floor.x1 < self.x and self.x < floor.x2 and floor.y2 < self.y2 and self.y2 < floor.y1:
-        #         self.y = (floor.y1 + self.right_move_image.h//2)
-        #         self.y1 = self.y + self.right_move_image.h//2
-        #         self.y2 = self.y - self.right_move_image.h//2
-        #         break
+
         if floors[self.floorlevel].x1 < self.x and self.x < floors[self.floorlevel].x2 and floors[self.floorlevel].y2 < self.y2 and self.y2 < floors[self.floorlevel].y1:
             self.y = (floors[self.floorlevel].y1 + self.right_move_image.h//2)
             self.y1 = self.y + self.right_move_image.h//2
