@@ -243,7 +243,7 @@ import WallObject
 floortype = 1 # map tool variable
 tool_name = 'floor' # map tool type
 
-def KeyDown_event(floors,player,walls,skill): # map tool variable
+def KeyDown_event(floors,player,walls,skill,monsters): # map tool variable
     global play , xPos , yPos ,MoveLeft ,MoveRight ,dir,JUMPKEYDOWN, FALLING,Current_KeyDown_List
     global floortype , tool_name
     events = get_events()
@@ -328,6 +328,8 @@ def KeyDown_event(floors,player,walls,skill): # map tool variable
                 skill.skill_timestop()
             if event.key == SDLK_s:
                 skill.skill_godmod()
+            if event.key == SDLK_d:
+                skill.skill_explosion(monsters)
         elif (event.type == SDL_KEYUP):
             if(event.key == SDLK_RIGHT):
                 Current_KeyDown_Status()

@@ -1,8 +1,7 @@
 import random
-
 from pico2d import *
 
-
+GameWindow_WITDH ,GameWindow_HEIGHT  = 600 , 600
 class MONSTER:
     # animation delaytime
     delayframe = 2
@@ -64,3 +63,15 @@ RUN_SPEED_PPS = RUN_SPEED_MPS * PIXEL_PER_METER
 TIME_PER_ACTION = 0.2
 ACTION_PER_TIME = 1.0 / TIME_PER_ACTION
 FRAMES_PER_ACTION = 14
+
+def explosionDeadmonsters(monsters):
+    removelist = []
+    for idx ,monster in enumerate(monsters):
+        if monster.y < GameWindow_HEIGHT and monster.y > 0:
+            removelist += [idx]    # 빈 배열에 삭제 할 몬스터의 인덱스 번호를 받아 저장
+
+    count = 0
+    for i in removelist:
+        print('삭제')
+        del monsters[i-count]
+        count += 1

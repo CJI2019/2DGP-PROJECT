@@ -1,5 +1,5 @@
 from pico2d import *
-
+from MonsterObject import explosionDeadmonsters
 class SKILL:
     def __init__(self):
         # 스킬 쿨타임
@@ -30,16 +30,17 @@ class SKILL:
         self.nodamegetime = 300
         self.skill_state[1] = 'godmod'
 
-    def skill_explosion(self):
+    def skill_explosion(self,monsters):
         print("explosion")
-        self.cooltime[2] = 100
-        self.skill_state[2] = 'explosion'
-
+        if self.cooltime[2] == 0:
+            explosionDeadmonsters(monsters)
+            self.cooltime[2] = 1000
+            self.skill_state[2] = 'explosion'
     def update(self):
         self.skill_timestop_update()
         # 스킬을 사용하면 쿨타임이 생기고 쿨타임을 update 마다 1씩 줄임
         for index,cooltime in enumerate(self.cooltime):
             if cooltime != 0:
-                # print(cooltime)
                 self.cooltime[index] -= 1
+                if self.cooltime[index] == 0: self.skill_state[index] = None
         if self.nodamegetime != 0 : self.nodamegetime -= 1

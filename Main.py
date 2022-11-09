@@ -55,7 +55,7 @@ while PlayerObject.play:
         monsters += [MonsterObject.MONSTER(floors[Player.level+3].level)]
 
     Player.Player_Movement(floors,walls,frame_time)
-    PlayerObject.KeyDown_event(floors,Player,walls,Skill)
+    PlayerObject.KeyDown_event(floors,Player,walls,Skill,monsters)
 
     FloorObject.FloorChange(Player,floors,Water,walls,monsters)
     
