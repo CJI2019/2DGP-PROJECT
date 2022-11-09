@@ -26,13 +26,14 @@ class SKILL:
 
     def skill_godmod(self):
         print("godmod")
-        self.cooltime[1] = 1000
-        self.nodamegetime = 300
-        self.skill_state[1] = 'godmod'
+        if self.cooltime[1] == 0:
+            self.cooltime[1] = 1000
+            self.nodamegetime = 300
+            self.skill_state[1] = 'godmod'
 
     def skill_explosion(self,monsters):
-        print("explosion")
         if self.cooltime[2] == 0:
+            print("explosion")
             explosionDeadmonsters(monsters)
             self.cooltime[2] = 1000
             self.skill_state[2] = 'explosion'
