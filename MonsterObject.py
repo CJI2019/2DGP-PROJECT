@@ -16,23 +16,24 @@ class MONSTER:
         self.dir = 0
         self.floorlevel = floorlevel
     def Draw(self):
-        for i in range(0,13):
-            if self.frame < MONSTER.delayframe * (i+1):
-                if self.dir == 0:
-                    self.right_move_image.clip_draw(i * (self.right_move_image.w // 14), 0, self.right_move_image.w // 14, self.right_move_image.h, self.x, self.y)
-                elif self.dir == 1:
-                    self.left_move_image.clip_draw(i * (self.left_move_image.w // 14), 0, self.left_move_image.w // 14, self.left_move_image.h, self.x, self.y)
-                if i == 13 - 1:
-                    self.frame = 2
-                break
-        self.frame += 1
-    def update(self,floors):
         if self.dir == 0:
-            self.x += 0.5; self.x1 += 0.5; self.x2 += 0.5
+            self.right_move_image.clip_draw(int(self.frame) * (self.right_move_image.w // 14), 0, self.right_move_image.w // 14, self.right_move_image.h, self.x, self.y)
+        elif self.dir == 1:
+            self.left_move_image.clip_draw(int(self.frame) * (self.left_move_image.w // 14), 0, self.left_move_image.w // 14, self.left_move_image.h, self.x, self.y)
+
+    def update(self,floors,frame_time):
+        self.frame = (self.frame + FRAMES_PER_ACTION * ACTION_PER_TIME * frame_time) % FRAMES_PER_ACTION
+
+        if self.dir == 0:
+            self.x += 0.5*RUN_SPEED_PPS*frame_time
+            self.x1 += 0.5*RUN_SPEED_PPS*frame_time
+            self.x2 += 0.5*RUN_SPEED_PPS*frame_time
             if self.x > 600:
                 self.dir = 1
         elif self.dir == 1:
-            self.x -= 0.5; self.x1 -= 0.5; self.x2 -= 0.5
+            self.x -= 0.5 * RUN_SPEED_PPS * frame_time
+            self.x1 -= 0.5 * RUN_SPEED_PPS * frame_time
+            self.x2 -= 0.5 * RUN_SPEED_PPS * frame_time
             if self.x < 0:
                 self.dir = 0
         self.y -= 1; self.y1 -= 1; self.y2 -= 1
@@ -53,3 +54,13 @@ class MONSTER:
             self.y -= FloorLevelAnimeSpeed
             self.y1 -= FloorLevelAnimeSpeed
             self.y2 -= FloorLevelAnimeSpeed
+
+PIXEL_PER_METER = 10.0 / 0.3
+RUN_SPEED_KPH = 15 # km/h
+RUN_SPEED_MPM = RUN_SPEED_KPH * 1000.0 / 60
+RUN_SPEED_MPS = RUN_SPEED_MPM / 60.0
+RUN_SPEED_PPS = RUN_SPEED_MPS * PIXEL_PER_METER
+
+TIME_PER_ACTION = 0.2
+ACTION_PER_TIME = 1.0 / TIME_PER_ACTION
+FRAMES_PER_ACTION = 14
