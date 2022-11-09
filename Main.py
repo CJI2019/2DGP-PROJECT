@@ -1,5 +1,5 @@
 from pico2d import *
-
+import time
 GameWindow_WITDH ,GameWindow_HEIGHT  = 600 , 600
 #open canvas를 먼저 해야 load image 가능
 open_canvas(GameWindow_WITDH,GameWindow_HEIGHT)
@@ -30,6 +30,9 @@ else:
 """"""""""""""""""""""""
 # 타이머 생성
 timer = 0
+
+frame_time = 0
+current_time = time.time()
 while PlayerObject.play:
     timer += 1
     clear_canvas()
@@ -51,7 +54,7 @@ while PlayerObject.play:
     if len(floors) > Player.level + 3 and timer % 1000 == 0:
         monsters += [MonsterObject.MONSTER(floors[Player.level+3].level)]
 
-    Player.Player_Movement(floors,walls)
+    Player.Player_Movement(floors,walls,frame_time)
     PlayerObject.KeyDown_event(floors,Player,walls,Skill)
 
     FloorObject.FloorChange(Player,floors,Water,walls,monsters)
@@ -65,10 +68,14 @@ while PlayerObject.play:
         # print(Skill.skill_state[0])
         if Skill.nodamegetime == 0 :
             Water.Crash(Player)
-        Water.update()
+        # Water.update()
         for monster in monsters:
             monster.update(floors)
 
     update_canvas()
+    frame_time = time.time() - current_time
+    frame_rate = 1 / frame_time
+    current_time += frame_time
+    # print(f'Frame Time: {frame_time},  Frame Rate: {frame_rate}')
 
 close_canvas()

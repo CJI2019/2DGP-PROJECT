@@ -47,7 +47,7 @@ class PLAYER:
             if(self.stoptime == 0):
                 print('몬스터 충돌')
                 self.status = 'monstercrash' ; self.stoptime = 20
-    def Player_Movement(self,floors,walls):
+    def Player_Movement(self,floors,walls, frame_time):
         global MoveRight , MoveLeft ,xPos,yPos,frame,FALLING,dir,JUMPKEYDOWN
         global play
         if self.status == 'monstercrash':
@@ -60,19 +60,19 @@ class PLAYER:
             delay(0.01)
         elif(JUMPKEYDOWN == False):
             if(MoveRight == True and MoveLeft == False):
-                frame += 1
-                self.Right_Run.clip_draw(((frame//2) % 10)*(self.Right_Run.w//10), 0, self.Right_Run.w//10, self.Right_Run.h,self.x,self.y)
+                frame = (frame + RUN_FRAMES_PER_ACTION * ACTION_PER_TIME * frame_time) % RUN_FRAMES_PER_ACTION
+                self.Right_Run.clip_draw(int(frame)*(self.Right_Run.w//10), 0, self.Right_Run.w//10, self.Right_Run.h,self.x,self.y)
                 delay(0.01)
             elif(MoveRight == False and MoveLeft == True):
-                frame += 1
-                self.Left_Run.clip_draw(((frame//2) % 10)*(self.Left_Run.w//10), 0, self.Left_Run.w//10, self.Left_Run.h,self.x,self.y)
+                frame = (frame + RUN_FRAMES_PER_ACTION * ACTION_PER_TIME * frame_time) % RUN_FRAMES_PER_ACTION
+                self.Left_Run.clip_draw(int(frame)*(self.Left_Run.w//10), 0, self.Left_Run.w//10, self.Left_Run.h,self.x,self.y)
                 delay(0.01)
             elif(MoveRight == False and MoveLeft == False):
-                frame += 1
+                frame = (frame + IDLE_FRAMES_PER_ACTION * IDLE_ACTION_PER_TIME * frame_time) % IDLE_FRAMES_PER_ACTION
                 if(dir == 0):
-                    self.Right_Idle.clip_draw(((frame//5) % 7)*(self.Right_Idle.w//7), 0,self.Right_Idle.w//7,self.Right_Idle.h,self.x,self.y)
+                    self.Right_Idle.clip_draw(int(frame)*(self.Right_Idle.w//7), 0,self.Right_Idle.w//7,self.Right_Idle.h,self.x,self.y)
                 else :
-                    self.Left_Idle.clip_draw(((frame//5) % 7)*(self.Left_Idle.w//7), 0,self.Left_Idle.w//7,self.Left_Idle.h,self.x,self.y)
+                    self.Left_Idle.clip_draw(int(frame)*(self.Left_Idle.w//7), 0,self.Left_Idle.w//7,self.Left_Idle.h,self.x,self.y)
                 delay(0.01)
         elif (JUMPKEYDOWN == True):
             if FALLING == False: # 점프로 올라가는 애니메이션
@@ -111,8 +111,9 @@ class PLAYER:
         # player 좌표 이동
 
         if self.stoptime == 0:
-            self.x += xPos * 4
-            self.x1 += xPos * 4; self.x2 += xPos * 4
+            self.x += xPos * RUN_SPEED_PPS * frame_time
+            self.x1 += xPos * RUN_SPEED_PPS * frame_time
+            self.x2 += xPos * RUN_SPEED_PPS * frame_time
         if self.x2 > GameWindow_WITDH or self.x1 < 0: 
             self.WallCrash()
         # enumerate 는 리스트의 인덱스,원소 형식의 튜플을 넘김
@@ -125,7 +126,7 @@ class PLAYER:
                 self.Wallpoint = -1
         if JUMPKEYDOWN :
             if FALLING == False: # 점프로 올라가는 애니메이션
-                self.y += yPos ; self.y1 += yPos ;self.y2 += yPos 
+                self.y += yPos ; self.y1 += yPos ;self.y2 += yPos
                 # 점프로 올라갈때 벽에 부딪히면 못올라가게.
                 if (self.level+1 < len(floors)):
                     if(floors[self.level+1].y2 < self.y + self.Right_Jump.h//2
@@ -199,6 +200,18 @@ class PLAYER:
                 yPos = JUMPHEIGHT
                 self.level -= 1
 
+PIXEL_PER_METER = 10.0 / 0.3
+RUN_SPEED_KPH = 30 # km/h
+RUN_SPEED_MPM = RUN_SPEED_KPH * 1000.0 / 60
+RUN_SPEED_MPS = RUN_SPEED_MPM / 60.0
+RUN_SPEED_PPS = RUN_SPEED_MPS * PIXEL_PER_METER
+
+TIME_PER_ACTION = 0.3
+ACTION_PER_TIME = 1.0 / TIME_PER_ACTION
+RUN_FRAMES_PER_ACTION = 8
+
+IDLE_ACTION_PER_TIME = 1.0 / 0.5
+IDLE_FRAMES_PER_ACTION = 7
 
 MoveRight ,MoveLeft = False , False
 
