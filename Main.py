@@ -62,7 +62,7 @@ while PlayerObject.play:
     Water.draw()
 
     # update
-    Skill.update()
+    Skill.update(frame_time)
     # timestop 스킬을 사용했으면 update 밑 객체들은 업데이트 안함
     if Skill.skill_state[0] == None:
         # print(Skill.skill_state[0])
@@ -71,7 +71,7 @@ while PlayerObject.play:
         # Water.update()
         for monster in monsters:
             monster.update(floors,frame_time)
-    Skill.draw()
+    Skill.draw(Player)
 
     update_canvas()
     frame_time = time.time() - current_time
