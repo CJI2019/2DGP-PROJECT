@@ -58,8 +58,10 @@ def enter():
     buttons += [Button(300,200,100,40)] # hard
 
 def exit():
-    global back , buttons
-    del back , buttons
+    global buttons,count
+    buttons.clear()
+    count = 0
+    pass
 
 def pause():
     pass

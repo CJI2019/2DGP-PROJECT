@@ -1,5 +1,6 @@
 from pico2d import *
 import game_framework
+import Game_title
 import time
 
 GameWindow_WITDH ,GameWindow_HEIGHT  = 600 , 600
@@ -110,7 +111,7 @@ def handle_events():
         if event.type == SDL_QUIT:
             game_framework.quit()
         elif (event.type, event.key) == (SDL_KEYDOWN, SDLK_ESCAPE):
-            game_framework.quit()
+            game_framework.change_state(Game_title)
         else:
             PlayerObject.KeyDown_event(event,floors,Player,walls,Skill,monsters,Potal)
 def draw():

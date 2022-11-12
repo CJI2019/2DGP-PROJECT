@@ -3,10 +3,14 @@ from pico2d import *
 class POTAL:
     def __init__(self,x,y):
         self.image = load_image('Potal.png')
+        self.clear_game = load_image('Title/game_clear2.png')
+        self.clear_stage =False
         self.frame = 0
         self.x = x
         self.y = y
     def draw(self):
+        if self.clear_stage == True:
+            self.clear_game.draw(300,300)
         if self.frame < 5:
             self.image.clip_composite_draw(int(self.frame) * self.image.w//5,self.image.h//2,self.image.w//5,self.image.h//2,0,'',self.x,self.y,100,100)
         else:
@@ -30,7 +34,7 @@ class POTAL:
         if ta < bb: return False
         print('3')
         if ba > tb: return False
-        print('true')
+        self.clear_stage = True
         return True
     def get_bb(self):
         return self.x - 30 , self.y + 30 , self.x + 30 ,self.y - 30
