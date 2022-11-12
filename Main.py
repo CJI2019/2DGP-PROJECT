@@ -71,6 +71,7 @@ while PlayerObject.play:
         # Water.update()
         for monster in monsters:
             monster.update(floors,frame_time)
+    Skill.draw()
 
     update_canvas()
     frame_time = time.time() - current_time

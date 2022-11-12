@@ -2,6 +2,13 @@ from pico2d import *
 from MonsterObject import explosionDeadmonsters
 class SKILL:
     def __init__(self):
+        self.skill_timestop_ui_image = load_image('Skill/skill_timestop.png')
+        self.skill_timestop_cooltime_ui_image = load_image('Skill/skill_timestop_cooltime.png')
+        self.skill_godmod_ui_image = load_image('Skill/skill_godmod.png')
+        self.skill_godmod_cooltime_ui_image = load_image('Skill/skill_godmod_cooltime.png')
+        self.skill_explosion_ui_image = load_image('Skill/skill_explosion.png')
+        self.skill_explosion_cooltime_ui_image = load_image('Skill/skill_explosion_cooltime.png')
+
         # 스킬 쿨타임
         self.cooltime = [0,0,0]
         self.skill_state = [None,None,None]
@@ -9,6 +16,21 @@ class SKILL:
         self.skill_timestop_duration = 500
         # 무적 시간
         self.nodamegetime = 0
+
+    def draw(self):
+        if(self.cooltime[0] == 0):
+            self.skill_timestop_ui_image.clip_composite_draw(0,0,self.skill_timestop_ui_image.w,self.skill_timestop_ui_image.h,0,'',32,32,64,64)
+        else:
+            self.skill_timestop_cooltime_ui_image.clip_composite_draw(0,0,self.skill_timestop_cooltime_ui_image.w,self.skill_timestop_cooltime_ui_image.h,0,'',32,32,64,64)
+        if (self.cooltime[1] == 0):
+            self.skill_godmod_ui_image.clip_composite_draw(0, 0, self.skill_godmod_ui_image.w,self.skill_godmod_ui_image.h, 0, '', 96, 32, 64, 64)
+        else:
+            self.skill_godmod_cooltime_ui_image.clip_composite_draw(0, 0, self.skill_godmod_cooltime_ui_image.w,self.skill_godmod_cooltime_ui_image.h, 0, '', 96, 32, 64, 64)
+        if (self.cooltime[2] == 0):
+            self.skill_explosion_ui_image.clip_composite_draw(0, 0, self.skill_explosion_ui_image.w,self.skill_explosion_ui_image.h, 0, '', 160, 32, 64, 64)
+        else:
+            self.skill_explosion_cooltime_ui_image.clip_composite_draw(0, 0, self.skill_explosion_cooltime_ui_image.w,self.skill_explosion_cooltime_ui_image.h, 0, '', 160,32, 64, 64)
+
     #   시간 정지 스킬 사용
     def skill_timestop(self):
         if self.cooltime[0] == 0:
