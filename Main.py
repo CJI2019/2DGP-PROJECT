@@ -11,6 +11,7 @@ import WaterObject
 import WallObject
 import MonsterObject
 import skill
+import Potal as potal
 BackGround = load_image("back_2_2000.png")
 BackGroundHeight = 0
 
@@ -21,6 +22,7 @@ floors = [FloorObject.FLOOR() for i in range(FloorObject.SizeOfFloor())]
 walls = [WallObject.WALL() for i in range(WallObject.SizeOfWall())]
 Player = PlayerObject.PLAYER()
 Skill = skill.SKILL()
+Potal = potal.POTAL(floors[-1].xPos,floors[-1].y1+35)
 # 플레이어 y 값 초기화 발판으로 맞춤
 Player.y = (floors[0].y1) + (Player.Right_Idle.h//2)
 if len(floors) > 3:
@@ -54,24 +56,26 @@ while PlayerObject.play:
     if len(floors) > Player.level + 3 and timer % 1000 == 0:
         monsters += [MonsterObject.MONSTER(floors[Player.level+3].level)]
 
+    Potal.draw()
+    Potal.update(frame_time)
+
     Player.Player_Movement(floors,walls,frame_time)
     PlayerObject.KeyDown_event(floors,Player,walls,Skill,monsters)
 
-    FloorObject.FloorChange(Player,floors,Water,walls,monsters)
+    FloorObject.FloorChange(Player,floors,Water,walls,monsters,Potal)
     
     Water.draw()
-
+    Skill.draw(Player)
     # update
     Skill.update(frame_time)
     # timestop 스킬을 사용했으면 update 밑 객체들은 업데이트 안함
     if Skill.skill_state[0] == None:
         # print(Skill.skill_state[0])
-        if Skill.nodamegetime == 0 :
+        if Skill.nodamegetime == 0:
             Water.Crash(Player)
-        # Water.update()
+        Water.update()
         for monster in monsters:
             monster.update(floors,frame_time)
-    Skill.draw(Player)
 
     update_canvas()
     frame_time = time.time() - current_time

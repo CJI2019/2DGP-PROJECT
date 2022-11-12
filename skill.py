@@ -41,9 +41,9 @@ class SKILL:
         if(self.skill_state[0] != None):
             self.skill_timestop_anime.draw(300,300)
         if (self.skill_state[1] != None):
-            self.skill_godmod_anime.clip_composite_draw(0, 0, self.skill_godmod_anime.w,self.skill_godmod_anime.h, 0, '', player.x,player.y, 100, 100)
+            self.skill_godmod_anime.clip_composite_draw(0, 0, self.skill_godmod_anime.w,self.skill_godmod_anime.h, 0, '', player.x,player.y, 130, 130)
         if(self.skill_state[2] != None):
-            self.skill_explosion_anime.clip_composite_draw(int(self.skill_explosion_frame)*int(self.skill_explosion_anime.w/7), 0, int(self.skill_explosion_anime.w/7),int(self.skill_explosion_anime.h), 0, '', 300,300, 600, 600)
+            self.skill_explosion_anime.clip_composite_draw(int(self.skill_explosion_frame)*int(self.skill_explosion_anime.w//7), 0, int(self.skill_explosion_anime.w//7),int(self.skill_explosion_anime.h), 0, '', 300,300, 600, 600)
     #   시간 정지 스킬 사용
     def skill_timestop(self):
         if self.cooltime[0] == 0:
@@ -77,16 +77,13 @@ class SKILL:
         # 스킬을 사용하면 쿨타임이 생기고 쿨타임을 update 마다 1씩 줄임
         for index,cooltime in enumerate(self.cooltime):
             if cooltime != 0: self.cooltime[index] -= 1
-                # if self.cooltime[index] == 0: self.skill_state[index] = None
         if self.nodamegetime != 0 :
             self.nodamegetime -= 1
             if self.nodamegetime == 0:
                 self.skill_state[1] = None
-
         if self.cooltime[2] != 0:
             self.skill_explosion_frame = (self.skill_explosion_frame + EXPLOSION_FRAMES_PER_ACTION * EXPLOSION_ACTION_PER_TIME * frame_time) % EXPLOSION_FRAMES_PER_ACTION
             if self.skill_explosion_frame >= 6.5:
-                print(self.skill_explosion_frame)
                 self.skill_state[2] = None
 
 
