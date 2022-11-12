@@ -25,9 +25,9 @@ class PLAYER:
         self.x = 300
         self.y = 300
         # 좌 상
-        self.x1, self.y1 = self.x - (self.Right_Idle.w//8), self.y + (self.Right_Idle.h//2)
+        self.x1, self.y1 = self.x - (self.Right_Idle.w//8//2), self.y + (self.Right_Idle.h//2)
         # 우 하
-        self.x2, self.y2 = self.x + (self.Right_Idle.w//8), self.y - (self.Right_Idle.h//2)
+        self.x2, self.y2 = self.x + (self.Right_Idle.w//8//2), self.y - (self.Right_Idle.h//2)
         self.Wallpoint = -1
         # 현재 floor 판별
         self.level = 0
@@ -35,19 +35,23 @@ class PLAYER:
         self.CompliteLevel = 0
         self.status = None
         self.stoptime = 0
+    def get_bb(self):
+        return self.x1,self.y1,self.x2,self.y2
     def CoordinateInput(self,val):
         self.y = val
         self.y1 = self.y + (self.Right_Idle.h//2);self.y2 = self.y - (self.Right_Idle.h//2)
-    def WallCrash(self): # 벽 장애물에 부딪히면 호출
+    def WallCrash(self,frame_time): # 벽 장애물에 부딪히면 호출
         global xPos
-        self.x -= xPos * 4 ; self.x1 -= xPos * 4; self.x2 -= xPos * 4
+        self.x -= xPos * RUN_SPEED_PPS * frame_time
+        self.x1 -= xPos * RUN_SPEED_PPS * frame_time
+        self.x2 -= xPos * RUN_SPEED_PPS * frame_time
     def MonsterCrash(self,monster): # 몬스터와 충돌
         global dir ,MoveRight,MoveLeft , xPos
         if (monster.x1 < self.x and self.x < monster.x2 and monster.y2 < self.y and self.y < monster.y1):
             if(self.stoptime == 0):
                 print('몬스터 충돌')
                 self.status = 'monstercrash' ; self.stoptime = 20
-    def Player_Movement(self,floors,walls, frame_time):
+    def draw(self, frame_time):
         global MoveRight , MoveLeft ,xPos,yPos,frame,FALLING,dir,JUMPKEYDOWN
         global play
         if self.status == 'monstercrash':
@@ -108,17 +112,18 @@ class PLAYER:
                         self.Left_Fall.clip_draw(0*(self.Left_Fall.w//3), 0,self.Left_Fall.w//3,self.Left_Fall.h,self.x,self.y)
             delay(0.01)
         
-        # player 좌표 이동
-
+    # player 좌표 이동
+    def update(self, floors, walls, frame_time):
+        global MoveRight, MoveLeft, xPos, yPos, frame, FALLING, dir, JUMPKEYDOWN
+        global play
         if self.stoptime == 0:
             self.x += xPos * RUN_SPEED_PPS * frame_time
-            self.x1 += xPos * RUN_SPEED_PPS * frame_time
-            self.x2 += xPos * RUN_SPEED_PPS * frame_time
-        if self.x2 > GameWindow_WITDH or self.x1 < 0: 
-            self.WallCrash()
+            self.x = clamp(0+(self.Right_Idle.w//8//2),self.x,GameWindow_WITDH-(self.Right_Idle.w//8//2))
+            self.x1 = self.x - (self.Right_Idle.w//8//2)
+            self.x2 = self.x + (self.Right_Idle.w//8//2)
         # enumerate 는 리스트의 인덱스,원소 형식의 튜플을 넘김
         for idx,wall in enumerate(walls):
-            wall.Crash(self,idx)
+            wall.Crash(self,idx,frame_time)
         if self.Wallpoint >= 0 and not JUMPKEYDOWN: # 벽위에 올라갔을때 해당 벽에서 멀어지면 떨어짐.
             if ((self.x2 + self.x1)//2 < walls[self.Wallpoint].x1 or 
             (self.x2 + self.x1)//2 > walls[self.Wallpoint].x2):
@@ -243,103 +248,115 @@ import WallObject
 floortype = 1 # map tool variable
 tool_name = 'floor' # map tool type
 
-def KeyDown_event(floors,player,walls,skill,monsters): # map tool variable
+def KeyDown_event(event,floors,player,walls,skill,monsters,potal): # map tool variable
     global play , xPos , yPos ,MoveLeft ,MoveRight ,dir,JUMPKEYDOWN, FALLING,Current_KeyDown_List
     global floortype , tool_name
     events = get_events()
 
-    for event in events:
-        if(event.type == SDL_QUIT or event.key == SDLK_ESCAPE):
-            play = False
-            # map tool start
-        elif event.type == SDL_MOUSEBUTTONDOWN and event.button == SDL_BUTTON_LEFT:
-            if tool_name == 'floor':
-                floors += [FloorObject.FLOOR(event.x,600-event.y,floortype)]
-            elif tool_name == 'wall':
-                walls += [WallObject.WALL(event.x,600-event.y)]
-        elif event.type == SDL_MOUSEBUTTONDOWN and event.button == SDL_BUTTON_RIGHT:
-            if tool_name == 'floor':
-                if floors[-1].level != player.level:
-                    floors.pop(len(floors)-1)
-                    FloorObject.level -= 1
-            elif tool_name == 'wall':
-                if(len(walls)> 0):
-                    walls.pop(len(walls)-1)
-        elif event.type == SDL_KEYDOWN and event.key == SDLK_F1:
-            tool_name = 'wall'
-            print("wall tool")
-        elif event.type == SDL_KEYDOWN and event.key == SDLK_F2:
-            tool_name = 'floor'
-            print("floor tool")
-        elif event.type == SDL_KEYDOWN and event.key == SDLK_1:
-            floortype = 1
-        elif event.type == SDL_KEYDOWN and event.key == SDLK_2:
-            floortype = 2
-        elif event.type == SDL_KEYDOWN and event.key == SDLK_3:
-            floortype = 3
-        elif event.type == SDL_KEYDOWN and event.key == SDLK_4:
-            floortype = 4
-        elif event.type == SDL_KEYDOWN and event.key == SDLK_5:
-            floortype = 5
-        elif event.type == SDL_KEYDOWN and event.key == SDLK_KP_PLUS: # 현재 플로어 정보 출력
-            print('\nFloor x 좌표 출력')
-            for floor in floors:
-                print(floor.xPos,end = ',')
-            print('\ny 좌표 출력')
-            for floor in floors:
-                print(floor.yPos+(100*player.level),end = ',')
-            print('\n이미지 타입 출력')
-            for floor in floors:
-                print(floor.floortype,end = ',') 
-            print('\nWall x 좌표 출력')
-            for wall in walls:
-                print(wall.x,end = ',')
-            print('\ny 좌표 출력')
-            for wall in walls:
-                print(wall.y+(100*player.level),end = ',')
-            print('\n') # map tool end
-        elif (event.type == SDL_KEYDOWN):
-            if(event.key == SDLK_RIGHT):
-                if player.stoptime != 0:
-                    player.stoptime -= 1
-                    if player.stoptime == 0:
-                        player.status = None
-                        skill.nodamegetime = 100
-                MoveRight ,MoveLeft = True ,False
-                dir = 0
-                Current_KeyDown_List[0] = 1
-                xPos += 1
-            if(event.key == SDLK_LEFT):
-                if player.stoptime != 0:
-                    player.stoptime -= 1
-                    if player.stoptime == 0:
-                        player.status = None
-                        skill.nodamegetime = 100
+    # for event in events:
+    if(event.type == SDL_QUIT or event.key == SDLK_ESCAPE):
+        play = False
+        # map tool start
+    elif event.type == SDL_MOUSEBUTTONDOWN and event.button == SDL_BUTTON_LEFT:
+        if tool_name == 'floor':
+            floors += [FloorObject.FLOOR(event.x,600-event.y,floortype)]
+        elif tool_name == 'wall':
+            walls += [WallObject.WALL(event.x,600-event.y)]
+    elif event.type == SDL_MOUSEBUTTONDOWN and event.button == SDL_BUTTON_RIGHT:
+        if tool_name == 'floor':
+            if floors[-1].level != player.level:
+                floors.pop(len(floors)-1)
+                FloorObject.level -= 1
+        elif tool_name == 'wall':
+            if(len(walls)> 0):
+                walls.pop(len(walls)-1)
+    elif event.type == SDL_KEYDOWN and event.key == SDLK_F1:
+        tool_name = 'wall'
+        print("wall tool")
+    elif event.type == SDL_KEYDOWN and event.key == SDLK_F2:
+        tool_name = 'floor'
+        print("floor tool")
+    elif event.type == SDL_KEYDOWN and event.key == SDLK_1:
+        floortype = 1
+    elif event.type == SDL_KEYDOWN and event.key == SDLK_2:
+        floortype = 2
+    elif event.type == SDL_KEYDOWN and event.key == SDLK_3:
+        floortype = 3
+    elif event.type == SDL_KEYDOWN and event.key == SDLK_4:
+        floortype = 4
+    elif event.type == SDL_KEYDOWN and event.key == SDLK_5:
+        floortype = 5
+    elif event.type == SDL_KEYDOWN and event.key == SDLK_KP_PLUS: # 현재 플로어 정보 출력
+        print('\nFloor x 좌표 출력')
+        for floor in floors:
+            print(floor.xPos,end = ',')
+        print('\ny 좌표 출력')
+        for floor in floors:
+            print(floor.yPos+(100*player.level),end = ',')
+        print('\n이미지 타입 출력')
+        for floor in floors:
+            print(floor.floortype,end = ',')
+        print('\nWall x 좌표 출력')
+        for wall in walls:
+            print(wall.x,end = ',')
+        print('\ny 좌표 출력')
+        for wall in walls:
+            print(wall.y+(100*player.level),end = ',')
+        print('\n') # map tool end
+    elif (event.type == SDL_KEYDOWN):
+        if(event.key == SDLK_RIGHT):
+            if player.stoptime != 0:
+                player.stoptime -= 1
+                if player.stoptime == 0:
+                    player.status = None
+                    skill.nodamegetime = 100
+                    xPos = -1
+
+            MoveRight ,MoveLeft = True ,False
+            dir = 0
+            Current_KeyDown_List[0] = 1
+            xPos += 1
+        if(event.key == SDLK_LEFT):
+            if player.stoptime != 0:
+                player.stoptime -= 1
+                if player.stoptime == 0:
+                    player.status = None
+                    skill.nodamegetime = 100
+                    xPos = 1
+            MoveRight ,MoveLeft = False , True
+            dir = 1
+            Current_KeyDown_List[1] = 1
+            xPos -= 1
+        if(event.key == SDLK_SPACE):
+            if yPos != 0 or player.stoptime != 0:
+                # continue
+                return
+            yPos = JUMPHEIGHT
+            JUMPKEYDOWN = True
+        if (event.key == SDLK_UP):
+            if potal.collision(player) == True:
+                print('CLEAR')
+        if event.key == SDLK_a:
+            skill.skill_timestop()
+        if event.key == SDLK_s:
+            skill.skill_godmod()
+        if event.key == SDLK_d:
+            skill.skill_explosion(monsters)
+    elif (event.type == SDL_KEYUP):
+        if(event.key == SDLK_RIGHT):
+            Current_KeyDown_Status()
+            Current_KeyDown_List[0] = 0
+            xPos = 0
+            if Current_KeyDown_List[1] == 1 :
                 MoveRight ,MoveLeft = False , True
-                dir = 1
-                Current_KeyDown_List[1] = 1
                 xPos -= 1
-            if(event.key == SDLK_SPACE):
-                if yPos != 0 or player.stoptime != 0:
-                    continue
-                yPos = JUMPHEIGHT
-                JUMPKEYDOWN = True
-            if event.key == SDLK_a:
-                skill.skill_timestop()
-            if event.key == SDLK_s:
-                skill.skill_godmod()
-            if event.key == SDLK_d:
-                skill.skill_explosion(monsters)
-        elif (event.type == SDL_KEYUP):
-            if(event.key == SDLK_RIGHT):
-                Current_KeyDown_Status()
-                Current_KeyDown_List[0] = 0
-                if Current_KeyDown_List[1] == 1 :
-                    MoveRight ,MoveLeft = False , True
-                xPos -= 1
-            if(event.key == SDLK_LEFT):
-                Current_KeyDown_Status()
-                Current_KeyDown_List[1] = 0
-                if Current_KeyDown_List[0] == 1 :
-                    MoveRight ,MoveLeft = True , False
+            # xPos -= 1
+        if(event.key == SDLK_LEFT):
+            Current_KeyDown_Status()
+            Current_KeyDown_List[1] = 0
+            xPos = 0
+            if Current_KeyDown_List[0] == 1 :
+                MoveRight ,MoveLeft = True , False
                 xPos += 1
+
+            # xPos += 1

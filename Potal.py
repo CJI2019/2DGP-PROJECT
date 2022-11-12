@@ -19,6 +19,20 @@ class POTAL:
             self.y += FloorLevelAnimeSpeed
         else:
             self.y -= FloorLevelAnimeSpeed
-
+    def collision(self,a): # 플레이어 정점과 충돌
+        la, ta, ra, ba = self.get_bb()
+        lb, tb, rb, bb = a.get_bb()
+        print('start')
+        if la > rb: return False
+        print('1')
+        if ra < lb: return False
+        print('2')
+        if ta < bb: return False
+        print('3')
+        if ba > tb: return False
+        print('true')
+        return True
+    def get_bb(self):
+        return self.x - 30 , self.y + 30 , self.x + 30 ,self.y - 30
 ACTION_PER_TIME = 1.0 / 0.7
 FRAMES_PER_ACTION = 8
