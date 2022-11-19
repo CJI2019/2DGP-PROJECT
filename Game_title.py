@@ -7,6 +7,7 @@ back = None
 buttons = []
 count = 0
 class Button:
+    NORMAL ,HARD = 0,0 # 각 난이도 1이면 열림 esay is default
     def __init__(self,x,y,raw,col):
         global count
         self.x ,self.y = x,y
@@ -24,6 +25,10 @@ class Button:
             self.image = load_image('Title/game_normal.png')
         elif count == 4:
             self.image = load_image('Title/game_hard.png')
+        elif count == 5:
+            self.image = load_image('Title/game_normal_lock.png')
+        elif count == 6:
+            self.image = load_image('Title/game_hard_lock.png')
         count += 1
 
 
@@ -47,7 +52,7 @@ class Button:
 
 
 def enter():
-    global back , buttons
+    global back , buttons , count
     back = load_image('Title/title.png')
     buttons += [Button(300,300,100,40)]
     buttons[0].status = True # start 버튼
@@ -56,6 +61,12 @@ def enter():
     buttons += [Button(300,400,100,40)] # esay
     buttons += [Button(300,300,100,40)] # normal
     buttons += [Button(300,200,100,40)] # hard
+    if( Button.NORMAL == 0):
+        buttons += [Button(300, 300, 100, 40)]  # normal lock
+    else: count += 1
+
+    if (Button.HARD == 0):
+        buttons += [Button(300, 200, 100, 40)]  # hard lock
 
 def exit():
     global buttons,count
@@ -86,9 +97,14 @@ def handle_events():
                         buttons[1].status = False
                         for i,b in enumerate(buttons):
                             if i > 1: b.status = True
+                        break
                     elif idx == 1: # 종료 버튼
                         game_framework.quit()
                     elif idx == 2: # esay
+                        game_framework.change_state(Main)
+                    elif idx == 3 and Button.NORMAL == 1:  # Normal
+                        game_framework.change_state(Main)
+                    elif idx == 4 and Button.HARD == 1: # Hard
                         game_framework.change_state(Main)
 
 def update():
@@ -102,4 +118,3 @@ def draw():
         if button.status == True:
             button.draw()
     update_canvas()
-    pass
