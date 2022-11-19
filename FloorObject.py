@@ -59,18 +59,27 @@ class FLOOR:
 def SizeOfFloor():
     return len(x)
 
+
+PIXEL_PER_METER = 10.0 / 0.3
+RUN_SPEED_KPH = 120 # km/h
+RUN_SPEED_MPM = RUN_SPEED_KPH * 1000.0 / 60
+RUN_SPEED_MPS = RUN_SPEED_MPM / 60.0
+RUN_SPEED_PPS = RUN_SPEED_MPS * PIXEL_PER_METER
+
 # 플레이어 현재 floor 레벨
 Player_Floor_Level = 0
 # floor 레벨 변화
 FloorLevelAnimeCount = 0
 # floor 에 따른 애니메이션 속도
-FloorLevelAnimeSpeed = 10 
+# FloorLevelAnimeSpeed = 10
 
-def FloorChange(Player,floors,Water,walls,monsters):
+def FloorChange(Player,floors,Water,walls,monsters,potal):
     global Player_Floor_Level ,FloorLevelAnimeCount,FloorLevelAnimeSpeed
 
+    FloorLevelAnimeSpeed = RUN_SPEED_PPS * game_framework.frame_time
+
     if (Player_Floor_Level != Player.CompliteLevel and FloorLevelAnimeCount == 0):
-        FloorLevelAnimeCount = (Player_Floor_Level - Player.CompliteLevel) * FloorLevelAnimeSpeed # 높아 지면 음수 
+        FloorLevelAnimeCount = (Player_Floor_Level - Player.CompliteLevel) * 0.1 # 높아 지면 음수
         Player_Floor_Level = Player.CompliteLevel
         
     if(FloorLevelAnimeCount != 0):
@@ -93,6 +102,7 @@ def FloorChange(Player,floors,Water,walls,monsters):
                 wall.y2 -= FloorLevelAnimeSpeed
         for monster in monsters:
             monster.floorchange(FloorLevelAnimeCount,FloorLevelAnimeSpeed)
+        potal.floorchange(FloorLevelAnimeCount,FloorLevelAnimeSpeed)
         if FloorLevelAnimeCount > 0:
             Water.y += FloorLevelAnimeSpeed
         else :
@@ -100,7 +110,11 @@ def FloorChange(Player,floors,Water,walls,monsters):
         # 플레이어 좌표 y값 floor 에 맞추기
         Player.CoordinateInput(floors[Player.CompliteLevel].y1 + Player.Right_Idle.h//2)
         if FloorLevelAnimeCount > 0 :
-            FloorLevelAnimeCount -= 1
+            FloorLevelAnimeCount -= game_framework.frame_time
+            if FloorLevelAnimeCount < 0:
+                FloorLevelAnimeCount = 0
         else:
-            FloorLevelAnimeCount += 1
+            FloorLevelAnimeCount += game_framework.frame_time
+            if FloorLevelAnimeCount > 0:
+                FloorLevelAnimeCount = 0
         
