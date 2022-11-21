@@ -3,6 +3,7 @@ from pico2d import *
 import Main
 import game_framework
 from Main import draw_world
+import Game_title
 
 clear_game = None
 game_next = None
@@ -36,6 +37,10 @@ def game_next_click(x,y):
     if y < 200: return
 
     Main.exit()
+    if Game_title.game_difficulty == 'Easy':
+        Game_title.game_difficulty = 'Normal'
+    elif Game_title.game_difficulty == 'Normal':
+        Game_title.game_difficulty = 'Hard'
     Main.enter()
     game_framework.pop_state()
 
