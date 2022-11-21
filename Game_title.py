@@ -6,6 +6,9 @@ import Main
 back = None
 buttons = []
 count = 0
+
+game_difficulty = 'esay'
+
 class Button:
     NORMAL ,HARD = 0,0 # 각 난이도 1이면 열림 esay is default
     def __init__(self,x,y,raw,col):
@@ -45,11 +48,8 @@ class Button:
         if ba > y: return False
 
         return True
-
-
     def get_bb(self):
         return self.x1,self.y1,self.x2,self.y2
-
 
 def enter():
     global back , buttons , count
@@ -81,6 +81,7 @@ def resume():
     pass
 
 def handle_events():
+    global game_difficulty
     events = get_events()
     for event in events:
         if event.type == SDL_QUIT:
@@ -101,10 +102,13 @@ def handle_events():
                     elif idx == 1: # 종료 버튼
                         game_framework.quit()
                     elif idx == 2: # esay
+                        game_difficulty = 'Easy'
                         game_framework.change_state(Main)
                     elif idx == 3 and Button.NORMAL == 1:  # Normal
+                        game_difficulty = 'Normal'
                         game_framework.change_state(Main)
                     elif idx == 4 and Button.HARD == 1: # Hard
+                        game_difficulty = 'Hard'
                         game_framework.change_state(Main)
 
 def update():
