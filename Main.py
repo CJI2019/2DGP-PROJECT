@@ -2,6 +2,7 @@ from pico2d import *
 import game_framework
 import Game_title
 import time
+import game_world
 
 GameWindow_WITDH ,GameWindow_HEIGHT  = 600 , 600
 #open canvas를 먼저 해야 load image 가
@@ -26,12 +27,16 @@ Skill = None
 Potal = None
 monsters = None
 def enter():
-    global Player , Skill , Potal , Water ,BackGround
+    global BackGround,BackGroundHeight,timer
+    global Player , Skill , Potal , Water
     global floors,walls,monsters
     # 객체 생성
     BackGround = load_image("back_2_2000.png")
+    # game_world.add_object(BackGround,0)
 
     Water = WaterObject.WATER()
+    game_world.add_object(Water,5)
+
     if Game_title.game_difficulty == 'Easy': # Easy 난이도
         Water.speed = 0.25
         monsterSpawntime = 10
@@ -52,19 +57,32 @@ def enter():
 
 
     floors = [FloorObject.FLOOR() for i in range(FloorObject.SizeOfFloor())]
-    walls = [WallObject.WALL() for i in range(WallObject.SizeOfWall())]
-    Player = PlayerObject.PLAYER()
-    Skill = skill.SKILL()
-    # Potal = potal.POTAL(floors[-1].xPos,floors[-1].y1+35)
-    Potal = potal.POTAL(floors[-1].xPos,floors[0].y1+35)
+    game_world.add_objects(floors,0)
 
-    # 플레이어 y 값 초기화 발판으로 맞춤
-    Player.y = (floors[0].y1) + (Player.Right_Idle.h//2)
-    Player.y1, Player.y2 = Player.y + (Player.Right_Idle.h // 2), Player.y - (Player.Right_Idle.h // 2)
+    # walls = [WallObject.WALL() for i in range(WallObject.SizeOfWall())]
+    walls = []
+    game_world.add_objects(walls,1)
+
+    # Potal = potal.POTAL(floors[-1].xPos,floors[-1].y1+35)
+    Potal = potal.POTAL(floors[-1].xPos,floors[0].y1+35) # 임시 포탈
+    game_world.add_object(Potal,2)
+
+
     if len(floors) > 3:
         monsters = [MonsterObject.MONSTER(3)]
     else:
         monsters = []
+    game_world.add_objects(monsters,3)
+
+    Player = PlayerObject.PLAYER()
+    game_world.add_object(Player, 4)
+    # 플레이어 y 값 초기화 발판으로 맞춤
+    Player.y = (floors[0].y1) + (Player.Right_Idle.h // 2)
+    Player.y1, Player.y2 = Player.y + (Player.Right_Idle.h // 2), Player.y - (Player.Right_Idle.h // 2)
+
+    Skill = skill.SKILL()
+    game_world.add_object(Skill, 6)
+
 
 """"""""""""""""""""""""
 # 타이머 생성
