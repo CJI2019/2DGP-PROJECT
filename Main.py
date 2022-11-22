@@ -164,3 +164,7 @@ def init_game():
     FloorObject.FloorLevelAnimeCount = 0
 
     WallObject.xcount, WallObject.ycount = 0, 0
+def add_monster():
+    global monsters
+    monsters += [MonsterObject.MONSTER(floors[Player.level + 3].level)]
+    game_world.add_object(monsters[-1],3)
