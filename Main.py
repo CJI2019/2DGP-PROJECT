@@ -1,11 +1,9 @@
 from pico2d import *
 import game_framework
 import Game_title
-import time
 import game_world
 
 GameWindow_WITDH ,GameWindow_HEIGHT  = 600 , 600
-#open canvas를 먼저 해야 load image 가
 
 import PlayerObject
 import FloorObject
@@ -96,29 +94,13 @@ def enter():
 """"""""""""""""""""""""
 
 def update():
+    global BackGround , timer,BackGroundHeight
+
+
     # 0.1 씩 배경 이미지 내려가게함.
-    BackGroundHeight += 0.1
+    BackGroundHeight += 0.05 * RUN_SPEED_PPS * game_framework.frame_time
     if BackGround.h - (int)(BackGroundHeight) <= GameWindow_HEIGHT:
         BackGroundHeight = 0
-    # for floor in floors:
-    #     floor.Draw()
-    # for wall in walls:
-    #     wall.Draw()
-    for monster in monsters:
-        # monster.Draw()
-        if Skill.nodamegetime == 0:
-            Player.MonsterCrash(monster)
-
-    if len(floors) > Player.level + 3 and timer % 1000 == 0:
-        monsters += [MonsterObject.MONSTER(floors[Player.level+3].level)]
-
-    # Potal.draw()
-    # draw_rectangle(*Potal.get_bb())  # 튜플을 넘길때 *을 붙히면 튜플을 펼쳐줌
-    Potal.update(frame_time)
-    Player.update(floors,walls,frame_time)
-    # Player.Player_Movement(floors,walls,frame_time)
-    # draw_rectangle(*Player.get_bb())  # 튜플을 넘길때 *을 붙히면 튜플을 펼쳐줌
-    # PlayerObject.KeyDown_event(floors,Player,walls,Skill,monsters,Potal)
     timer -= game_framework.frame_time
     if len(floors) > Player.level + 3 and timer < 0:  # 일정 시간 마다 몬스터 생성
         timer = monsterSpawntime
@@ -128,25 +110,6 @@ def update():
         game_object.update()
 
     FloorObject.FloorChange(Player,floors,Water,walls,monsters,Potal)
-    
-    # Water.draw()
-    # Skill.draw(Player)
-    # update
-    Skill.update(frame_time)
-    # timestop 스킬을 사용했으면 update 밑 객체들은 업데이트 안함
-    if Skill.skill_state[0] == None:
-        # print(Skill.skill_state[0])
-        if Skill.nodamegetime == 0:
-            Water.Crash(Player)
-        Water.update()
-        for monster in monsters:
-            monster.update(floors,frame_time)
-
-    # update_canvas()
-    frame_time = time.time() - current_time
-    frame_rate = 1 / frame_time
-    current_time += frame_time
-    # print(f'Frame Time: {frame_time},  Frame Rate: {frame_rate}')
 
 def handle_events():
     events = get_events()
@@ -158,28 +121,10 @@ def handle_events():
         else:
             PlayerObject.KeyDown_event(event,floors,Player,walls,Skill,monsters,Potal)
 def draw():
-
     clear_canvas()
-    BackGround.clip_draw(0, (int)(BackGroundHeight), GameWindow_WITDH, GameWindow_HEIGHT
-                         , GameWindow_WITDH // 2, GameWindow_HEIGHT // 2)
 
-    for floor in floors:
-        floor.Draw()
-    for wall in walls:
-        wall.Draw()
 
-    for monster in monsters:
-        monster.Draw()
 
-    Potal.draw()
-    draw_rectangle(*Potal.get_bb())  # 튜플을 넘길때 *을 붙히면 튜플을 펼쳐줌
-
-    Player.draw(frame_time)
-    draw_rectangle(*Player.get_bb())  # 튜플을 넘길때 *을 붙히면 튜플을 펼쳐줌
-
-    # Water.draw()
-    Skill.draw(Player)
-    update_canvas()
 
 def exit():
     pass
