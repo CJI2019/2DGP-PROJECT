@@ -122,9 +122,45 @@ def handle_events():
             PlayerObject.KeyDown_event(event,floors,Player,walls,Skill,monsters,Potal)
 def draw():
     clear_canvas()
+    draw_world()
+    update_canvas()
 
+def draw_world():
+    global Player, Skill, Potal, Water, BackGround
+    global floors, walls, monsters
 
+    BackGround.clip_draw(0, (int)(BackGroundHeight), GameWindow_WITDH, GameWindow_HEIGHT
+                         , GameWindow_WITDH // 2, GameWindow_HEIGHT // 2)
 
+    for game_object in game_world.all_objects():
+        game_object.draw()
 
 def exit():
+    init_game()
+    game_world.clear()
+def pause():
     pass
+def resume():
+    pass
+
+def init_game():
+    global BackGround, BackGroundHeight, timer
+    BackGround = None
+    BackGroundHeight = 0
+    timer = monsterSpawntime
+
+    PlayerObject.JUMPKEYDOWN = False
+    PlayerObject.MoveRight, PlayerObject.MoveLeft = False, False
+    PlayerObject.FALLING = False
+    PlayerObject.frame = 0
+    PlayerObject.xPos, PlayerObject.yPos = 0, 0
+    PlayerObject.dir = 0
+    PlayerObject.Current_KeyDown_List = [0, 0]
+
+    FloorObject.xcount = 0
+    FloorObject.ycount = 0
+    FloorObject.level = 0
+    FloorObject.Player_Floor_Level = 0
+    FloorObject.FloorLevelAnimeCount = 0
+
+    WallObject.xcount, WallObject.ycount = 0, 0
