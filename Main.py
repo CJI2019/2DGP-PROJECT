@@ -26,10 +26,19 @@ Player = None
 Skill = None
 Potal = None
 monsters = None
+
+# 타이머 생성
+monsterSpawntime = 10
+timer = monsterSpawntime
 def enter():
     global BackGround,BackGroundHeight,timer
     global Player , Skill , Potal , Water
     global floors,walls,monsters
+    global monsterSpawntime
+
+    timer = monsterSpawntime
+    BackGroundHeight = 0
+
     # 객체 생성
     BackGround = load_image("back_2_2000.png")
     # game_world.add_object(BackGround,0)
@@ -85,18 +94,8 @@ def enter():
 
 
 """"""""""""""""""""""""
-# 타이머 생성
-timer = 0
 
-frame_time = 0
-current_time = time.time()
 def update():
-    global timer ,BackGroundHeight ,monsters ,frame_time ,current_time
-    global Player, Skill, Potal, Water, BackGround
-    timer += 1
-    # clear_canvas()
-    # BackGround.clip_draw(0,(int)(BackGroundHeight),GameWindow_WITDH,GameWindow_HEIGHT
-    #                 ,GameWindow_WITDH//2,GameWindow_HEIGHT//2)
     # 0.1 씩 배경 이미지 내려가게함.
     BackGroundHeight += 0.1
     if BackGround.h - (int)(BackGroundHeight) <= GameWindow_HEIGHT:
@@ -120,6 +119,13 @@ def update():
     # Player.Player_Movement(floors,walls,frame_time)
     # draw_rectangle(*Player.get_bb())  # 튜플을 넘길때 *을 붙히면 튜플을 펼쳐줌
     # PlayerObject.KeyDown_event(floors,Player,walls,Skill,monsters,Potal)
+    timer -= game_framework.frame_time
+    if len(floors) > Player.level + 3 and timer < 0:  # 일정 시간 마다 몬스터 생성
+        timer = monsterSpawntime
+        add_monster()
+
+    for game_object in game_world.all_objects():
+        game_object.update()
 
     FloorObject.FloorChange(Player,floors,Water,walls,monsters,Potal)
     
