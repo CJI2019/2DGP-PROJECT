@@ -1,5 +1,7 @@
 from pico2d import *
 import WallObject
+import game_framework as gf
+import Main
 GameWindow_WITDH ,GameWindow_HEIGHT  = 600 , 600
 # 점프 높이
 JUMPHEIGHT = 15
@@ -204,6 +206,27 @@ class PLAYER:
                 JUMPKEYDOWN , FALLING = True , True
                 yPos = JUMPHEIGHT
                 self.level -= 1
+    def handle_event(self, event):
+        global yPos ,JUMPKEYDOWN
+        if (event.type, event.key) in key_event_table:
+            key_event = key_event_table[(event.type, event.key)]
+            self.add_event(key_event)
+            print('event : ', key_event)
+
+        elif event.type == SDL_KEYUP: return
+        elif event.type == SDL_KEYDOWN and event.key == SDLK_SPACE:
+            if yPos > 0 or Main.Player.stoptime != 0:
+                return
+            yPos = JUMPHEIGHT
+            JUMPKEYDOWN = True
+        elif event.type == SDL_KEYDOWN and event.key == SDLK_UP:
+            Main.Potal.collision(self) # Game Clear
+        elif event.type == SDL_KEYDOWN and event.key == SDLK_a:
+            Main.Skill.skill_timestop()
+        elif event.type == SDL_KEYDOWN and event.key == SDLK_s:
+            Main.Skill.skill_godmod()
+        elif event.type == SDL_KEYDOWN and event.key == SDLK_d:
+            Main.Skill.skill_explosion(Main.monsters)
 
 PIXEL_PER_METER = 10.0 / 0.3
 RUN_SPEED_KPH = 30 # km/h
@@ -243,120 +266,23 @@ def Current_KeyDown_Status():
     if temp == 1 :
         MoveRight ,MoveLeft = False ,False
  
-import FloorObject
-import WallObject
-floortype = 1 # map tool variable
-tool_name = 'floor' # map tool type
 
-def KeyDown_event(event,floors,player,walls,skill,monsters,potal): # map tool variable
-    global play , xPos , yPos ,MoveLeft ,MoveRight ,dir,JUMPKEYDOWN, FALLING,Current_KeyDown_List
-    global floortype , tool_name
+def KeyDown_event(event): # map tool variable
+    global  xPos , yPos ,MoveLeft ,MoveRight ,JUMPKEYDOWN, FALLING,Current_KeyDown_List
     events = get_events()
 
-    # for event in events:
-    if(event.type == SDL_QUIT or event.key == SDLK_ESCAPE):
-        play = False
-        # map tool start
-    elif event.type == SDL_MOUSEBUTTONDOWN and event.button == SDL_BUTTON_LEFT:
-        if tool_name == 'floor':
-            floors += [FloorObject.FLOOR(event.x,600-event.y,floortype)]
-        elif tool_name == 'wall':
-            walls += [WallObject.WALL(event.x,600-event.y)]
-    elif event.type == SDL_MOUSEBUTTONDOWN and event.button == SDL_BUTTON_RIGHT:
-        if tool_name == 'floor':
-            if floors[-1].level != player.level:
-                floors.pop(len(floors)-1)
-                FloorObject.level -= 1
-        elif tool_name == 'wall':
-            if(len(walls)> 0):
-                walls.pop(len(walls)-1)
-    elif event.type == SDL_KEYDOWN and event.key == SDLK_F1:
-        tool_name = 'wall'
-        print("wall tool")
-    elif event.type == SDL_KEYDOWN and event.key == SDLK_F2:
-        tool_name = 'floor'
-        print("floor tool")
-    elif event.type == SDL_KEYDOWN and event.key == SDLK_1:
-        floortype = 1
-    elif event.type == SDL_KEYDOWN and event.key == SDLK_2:
-        floortype = 2
-    elif event.type == SDL_KEYDOWN and event.key == SDLK_3:
-        floortype = 3
-    elif event.type == SDL_KEYDOWN and event.key == SDLK_4:
-        floortype = 4
-    elif event.type == SDL_KEYDOWN and event.key == SDLK_5:
-        floortype = 5
-    elif event.type == SDL_KEYDOWN and event.key == SDLK_KP_PLUS: # 현재 플로어 정보 출력
-        print('\nFloor x 좌표 출력')
-        for floor in floors:
-            print(floor.xPos,end = ',')
-        print('\ny 좌표 출력')
-        for floor in floors:
-            print(floor.yPos+(100*player.level),end = ',')
-        print('\n이미지 타입 출력')
-        for floor in floors:
-            print(floor.floortype,end = ',')
-        print('\nWall x 좌표 출력')
-        for wall in walls:
-            print(wall.x,end = ',')
-        print('\ny 좌표 출력')
-        for wall in walls:
-            print(wall.y+(100*player.level),end = ',')
-        print('\n') # map tool end
-    elif (event.type == SDL_KEYDOWN):
-        if(event.key == SDLK_RIGHT):
-            if player.stoptime != 0:
-                player.stoptime -= 1
-                if player.stoptime == 0:
-                    player.status = None
-                    skill.nodamegetime = 100
-                    xPos = -1
-
-            MoveRight ,MoveLeft = True ,False
-            dir = 0
-            Current_KeyDown_List[0] = 1
-            xPos += 1
-        if(event.key == SDLK_LEFT):
-            if player.stoptime != 0:
-                player.stoptime -= 1
-                if player.stoptime == 0:
-                    player.status = None
-                    skill.nodamegetime = 100
-                    xPos = 1
-            MoveRight ,MoveLeft = False , True
-            dir = 1
-            Current_KeyDown_List[1] = 1
-            xPos -= 1
+    if (event.type == SDL_KEYDOWN):
         if(event.key == SDLK_SPACE):
-            if yPos != 0 or player.stoptime != 0:
+            if yPos > 0 or Main.Player.stoptime != 0:
                 # continue
                 return
             yPos = JUMPHEIGHT
             JUMPKEYDOWN = True
-        if (event.key == SDLK_UP):
-            if potal.collision(player) == True:
-                print('CLEAR')
-        if event.key == SDLK_a:
-            skill.skill_timestop()
-        if event.key == SDLK_s:
-            skill.skill_godmod()
-        if event.key == SDLK_d:
-            skill.skill_explosion(monsters)
-    elif (event.type == SDL_KEYUP):
-        if(event.key == SDLK_RIGHT):
-            Current_KeyDown_Status()
-            Current_KeyDown_List[0] = 0
-            xPos = 0
-            if Current_KeyDown_List[1] == 1 :
-                MoveRight ,MoveLeft = False , True
-                xPos -= 1
-            # xPos -= 1
-        if(event.key == SDLK_LEFT):
-            Current_KeyDown_Status()
-            Current_KeyDown_List[1] = 0
-            xPos = 0
-            if Current_KeyDown_List[0] == 1 :
-                MoveRight ,MoveLeft = True , False
-                xPos += 1
-
-            # xPos += 1
+        elif (event.key == SDLK_UP):
+            Main.Potal.collision(Main.Player) # Game Clear
+        elif event.key == SDLK_a:
+            Main.Skill.skill_timestop()
+        elif event.key == SDLK_s:
+            Main.Skill.skill_godmod()
+        elif event.key == SDLK_d:
+            Main.Skill.skill_explosion(Main.monsters)

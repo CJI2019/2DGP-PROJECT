@@ -119,7 +119,8 @@ def handle_events():
         elif (event.type, event.key) == (SDL_KEYDOWN, SDLK_ESCAPE):
             game_framework.change_state(Game_title)
         else:
-            PlayerObject.KeyDown_event(event,floors,Player,walls,Skill,monsters,Potal)
+            maptool_event(event)
+            Player.handle_event(event)
 def draw():
     clear_canvas()
     draw_world()
@@ -168,3 +169,64 @@ def add_monster():
     global monsters
     monsters += [MonsterObject.MONSTER(floors[Player.level + 3].level)]
     game_world.add_object(monsters[-1],3)
+
+floortype = 1 # map tool variable
+tool_name = 'floor' # map tool type
+def maptool_event(event):
+    global floortype,tool_name ,Player ,floors,walls
+    if event.type == SDL_MOUSEBUTTONDOWN and event.button == SDL_BUTTON_LEFT:
+        if tool_name == 'floor':
+            floors += [FloorObject.FLOOR(event.x,600-event.y,floortype)] # maptool
+            game_world.add_object(floors[-1], 1)
+        elif tool_name == 'wall':
+            walls += [WallObject.WALL(event.x,600-event.y)]
+            game_world.add_object(walls[-1], 1)
+    elif event.type == SDL_MOUSEBUTTONDOWN and event.button == SDL_BUTTON_RIGHT:
+        if tool_name == 'floor':
+            if floors[-1].level != Player.level:
+                game_world.remove_object(floors.pop(len(floors)-1))
+                # floors.pop(len(floors)-1)
+                FloorObject.level -= 1
+        elif tool_name == 'wall':
+            if(len(walls)> 0):
+                game_world.remove_object(walls.pop(len(walls)-1))
+                # walls.pop(len(walls)-1)
+    elif event.type == SDL_KEYDOWN and event.key == SDLK_F1:
+        tool_name = 'wall'
+        print("wall tool")
+    elif event.type == SDL_KEYDOWN and event.key == SDLK_F2:
+        tool_name = 'floor'
+        print("floor tool")
+    elif event.type == SDL_KEYDOWN and event.key == SDLK_1:
+        floortype = 1
+    elif event.type == SDL_KEYDOWN and event.key == SDLK_2:
+        floortype = 2
+    elif event.type == SDL_KEYDOWN and event.key == SDLK_3:
+        floortype = 3
+    elif event.type == SDL_KEYDOWN and event.key == SDLK_4:
+        floortype = 4
+    elif event.type == SDL_KEYDOWN and event.key == SDLK_5:
+        floortype = 5
+    elif event.type == SDL_KEYDOWN and event.key == SDLK_KP_PLUS: # 현재 플로어 정보 출력
+        print('\nFloor x 좌표 출력')
+        for floor in floors:
+            print(floor.xPos,end = ',')
+        print('\ny 좌표 출력')
+        for floor in floors:
+            print(floor.yPos+(100*Player.level),end = ',')
+        print('\n이미지 타입 출력')
+        for floor in floors:
+            print(floor.floortype,end = ',')
+        print('\nWall x 좌표 출력')
+        for wall in walls:
+            print(wall.x,end = ',')
+        print('\ny 좌표 출력')
+        for wall in walls:
+            print(wall.y+(100*Player.level),end = ',')
+        print('\n') # map tool end
+
+PIXEL_PER_METER = 10.0 / 0.3
+RUN_SPEED_KPH = 15  # km/h
+RUN_SPEED_MPM = RUN_SPEED_KPH * 1000.0 / 60
+RUN_SPEED_MPS = RUN_SPEED_MPM / 60.0
+RUN_SPEED_PPS = RUN_SPEED_MPS * PIXEL_PER_METER
