@@ -24,12 +24,14 @@ class WALL:
     def Draw(self):
         if self.status:
             self.image.draw(self.x,self.y)
-    def Crash(self,player,index):
+    def update(self):
+        pass
+    def Crash(self,player,index,frame_time):
         # 플레이어가 벽의 사각형 내에 있을때 (총 4개의 점)
         if (player.x1 > self.x1 and player.x1 < self.x2 and # 좌
         (player.y1+player.y2)//2 < self.y1 and (player.y1+player.y2)//2 > self.y2):
             if PlayerObject.xPos < 0 :
-                player.WallCrash(); self.status = True
+                player.WallCrash(frame_time); self.status = True
                 print("충돌")
             elif PlayerObject.xPos == 0 :
                 player.x += 1; player.x1 += 1 ; player.x2 += 1
@@ -37,7 +39,7 @@ class WALL:
         elif (player.x2 > self.x1 and player.x2 < self.x2 and # 우
         (player.y1+player.y2)//2 < self.y1 and (player.y1+player.y2)//2 > self.y2):
             if PlayerObject.xPos > 0 :
-                player.WallCrash(); self.status = True
+                player.WallCrash(frame_time); self.status = True
                 print("충돌")
             elif PlayerObject.xPos == 0 :
                 player.x -= 1; player.x1 -= 1 ; player.x2 -= 1

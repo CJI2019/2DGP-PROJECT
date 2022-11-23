@@ -72,14 +72,14 @@ class SKILL:
             self.cooltime[2] = 1000
             self.skill_state[2] = 'explosion'
             self.skill_explosion_frame = 0
-    def update(self,frame_time):
+    def update(self):
         self.skill_timestop_update()
         # 스킬을 사용하면 쿨타임이 생기고 쿨타임을 update 마다 1씩 줄임
         for index,cooltime in enumerate(self.cooltime):
-            if cooltime != 0: self.cooltime[index] -= 1
-        if self.nodamegetime != 0 :
-            self.nodamegetime -= 1
-            if self.nodamegetime == 0:
+            if cooltime >= 0: self.cooltime[index] -= gf.frame_time
+        if self.nodamegetime >= 0 :
+            self.nodamegetime -= gf.frame_time
+            if self.nodamegetime <= 0:
                 self.skill_state[1] = None
         if self.cooltime[2] != 0:
             self.skill_explosion_frame = (self.skill_explosion_frame + EXPLOSION_FRAMES_PER_ACTION * EXPLOSION_ACTION_PER_TIME * frame_time) % EXPLOSION_FRAMES_PER_ACTION

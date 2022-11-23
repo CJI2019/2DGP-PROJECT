@@ -1,5 +1,8 @@
 import random
 from pico2d import *
+import game_framework as gf
+import Main
+import game_world
 
 GameWindow_WITDH ,GameWindow_HEIGHT  = 600 , 600
 class MONSTER:
@@ -20,30 +23,37 @@ class MONSTER:
         elif self.dir == 1:
             self.left_move_image.clip_draw(int(self.frame) * (self.left_move_image.w // 14), 0, self.left_move_image.w // 14, self.left_move_image.h, self.x, self.y)
 
-    def update(self,floors,frame_time):
-        self.frame = (self.frame + FRAMES_PER_ACTION * ACTION_PER_TIME * frame_time) % FRAMES_PER_ACTION
+    def update(self):
+
+        Main.Player.MonsterCrash(self)
+
+        if Main.Skill.skill_state[0] != None : return # 시간 정지 상태 일때 update 안함
+
+        self.frame = (self.frame + FRAMES_PER_ACTION * ACTION_PER_TIME * gf.frame_time) % FRAMES_PER_ACTION
 
         if self.dir == 0:
-            self.x += 0.5*RUN_SPEED_PPS*frame_time
-            self.x1 += 0.5*RUN_SPEED_PPS*frame_time
-            self.x2 += 0.5*RUN_SPEED_PPS*frame_time
+            self.x += 0.5*RUN_SPEED_PPS*gf.frame_time
+            self.x1 += 0.5*RUN_SPEED_PPS*gf.frame_time
+            self.x2 += 0.5*RUN_SPEED_PPS*gf.frame_time
             if self.x > 600:
                 self.dir = 1
         elif self.dir == 1:
-            self.x -= 0.5 * RUN_SPEED_PPS * frame_time
-            self.x1 -= 0.5 * RUN_SPEED_PPS * frame_time
-            self.x2 -= 0.5 * RUN_SPEED_PPS * frame_time
+            self.x -= 0.5 * RUN_SPEED_PPS * gf.frame_time
+            self.x1 -= 0.5 * RUN_SPEED_PPS * gf.frame_time
+            self.x2 -= 0.5 * RUN_SPEED_PPS * gf.frame_time
             if self.x < 0:
                 self.dir = 0
-        self.y -= 1; self.y1 -= 1; self.y2 -= 1
+        self.y -= 0.5 * RUN_SPEED_PPS * gf.frame_time
+        self.y1 -= 0.5 * RUN_SPEED_PPS * gf.frame_time
+        self.y2 -= 0.5 * RUN_SPEED_PPS * gf.frame_time
 
-        if floors[self.floorlevel].x1 < self.x and self.x < floors[self.floorlevel].x2 and floors[self.floorlevel].y2 < self.y2 and self.y2 < floors[self.floorlevel].y1:
-            self.y = (floors[self.floorlevel].y1 + self.right_move_image.h//2)
+        if (Main.floors[self.floorlevel].x1 < self.x and self.x < Main.floors[self.floorlevel].x2
+                and Main.floors[self.floorlevel].y2 < self.y2 and self.y2 < Main.floors[self.floorlevel].y1):
+            self.y = (Main.floors[self.floorlevel].y1 + self.right_move_image.h//2)
             self.y1 = self.y + self.right_move_image.h//2
             self.y2 = self.y - self.right_move_image.h//2
-        if floors[self.floorlevel].x1 > self.x or floors[self.floorlevel].x2 < self.x:
+        if Main.floors[self.floorlevel].x1 > self.x or Main.floors[self.floorlevel].x2 < self.x:
             self.floorlevel -= 1
-
     def floorchange(self, FloorLevelAnimeCount, FloorLevelAnimeSpeed):
         if FloorLevelAnimeCount > 0:
             self.y += FloorLevelAnimeSpeed
