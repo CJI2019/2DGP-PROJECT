@@ -26,6 +26,7 @@ class PLAYER:
         self.Left_key = load_image('right_key.png')
         self.x = 300
         self.y = 300
+        self.dir = 1
         # 좌 상
         self.x1, self.y1 = self.x - (self.Right_Idle.w//8//2), self.y + (self.Right_Idle.h//2)
         # 우 하
@@ -37,6 +38,10 @@ class PLAYER:
         self.CompliteLevel = 0
         self.status = None
         self.stoptime = 0
+
+        self.event_que = []
+        self.cur_state = IDLE
+        self.cur_state.enter(self, None)
     def get_bb(self):
         return self.x1,self.y1,self.x2,self.y2
     def CoordinateInput(self,val):
@@ -48,71 +53,65 @@ class PLAYER:
         self.x1 -= xPos * RUN_SPEED_PPS * frame_time
         self.x2 -= xPos * RUN_SPEED_PPS * frame_time
     def MonsterCrash(self,monster): # 몬스터와 충돌
-        global dir ,MoveRight,MoveLeft , xPos
+        global MoveRight,MoveLeft , xPos
+        if Main.Skill.nodamegetime >= 0: return
         if (monster.x1 < self.x and self.x < monster.x2 and monster.y2 < self.y and self.y < monster.y1):
             if(self.stoptime == 0):
                 print('몬스터 충돌')
                 self.status = 'monstercrash' ; self.stoptime = 20
-    def draw(self, frame_time):
-        global MoveRight , MoveLeft ,xPos,yPos,frame,FALLING,dir,JUMPKEYDOWN
+    def draw(self):
+        global MoveRight, MoveLeft,xPos,yPos,frame,FALLING,JUMPKEYDOWN
         global play
         if self.status == 'monstercrash':
-            if (dir == 0):
+            if (self.dir == 1):
                 self.Right_key.draw(self.x,self.y+(self.Right_Run.h//2))
                 self.Right_Crash.draw(self.x,self.y-(self.Right_Run.h//4))
-            elif (dir == 1):
+            elif (self.dir == -1):
                 self.Left_key.draw(self.x,self.y+(self.Right_Run.h//2))
                 self.Left_Crash.draw(self.x,self.y-(self.Right_Run.h//4))
-            delay(0.01)
         elif(JUMPKEYDOWN == False):
-            if(MoveRight == True and MoveLeft == False):
-                frame = (frame + RUN_FRAMES_PER_ACTION * ACTION_PER_TIME * frame_time) % RUN_FRAMES_PER_ACTION
+            if xPos == 1:
+                frame = (frame + RUN_FRAMES_PER_ACTION * ACTION_PER_TIME * gf.frame_time) % RUN_FRAMES_PER_ACTION
                 self.Right_Run.clip_draw(int(frame)*(self.Right_Run.w//10), 0, self.Right_Run.w//10, self.Right_Run.h,self.x,self.y)
-                delay(0.01)
-            elif(MoveRight == False and MoveLeft == True):
-                frame = (frame + RUN_FRAMES_PER_ACTION * ACTION_PER_TIME * frame_time) % RUN_FRAMES_PER_ACTION
+            elif xPos == -1:
+                frame = (frame + RUN_FRAMES_PER_ACTION * ACTION_PER_TIME * gf.frame_time) % RUN_FRAMES_PER_ACTION
                 self.Left_Run.clip_draw(int(frame)*(self.Left_Run.w//10), 0, self.Left_Run.w//10, self.Left_Run.h,self.x,self.y)
-                delay(0.01)
-            elif(MoveRight == False and MoveLeft == False):
-                frame = (frame + IDLE_FRAMES_PER_ACTION * IDLE_ACTION_PER_TIME * frame_time) % IDLE_FRAMES_PER_ACTION
-                if(dir == 0):
+            elif xPos == 0:
+                frame = (frame + IDLE_FRAMES_PER_ACTION * IDLE_ACTION_PER_TIME * gf.frame_time) % IDLE_FRAMES_PER_ACTION
+                if self.dir == 1:
                     self.Right_Idle.clip_draw(int(frame)*(self.Right_Idle.w//7), 0,self.Right_Idle.w//7,self.Right_Idle.h,self.x,self.y)
-                else :
+                elif self.dir == -1:
                     self.Left_Idle.clip_draw(int(frame)*(self.Left_Idle.w//7), 0,self.Left_Idle.w//7,self.Left_Idle.h,self.x,self.y)
-                delay(0.01)
         elif (JUMPKEYDOWN == True):
             if FALLING == False: # 점프로 올라가는 애니메이션
-                if dir == 0: 
+                if self.dir == 1:
                     if(yPos > (JUMPHEIGHT /3)*2): # 점프 모션을 3분할 하여 더욱 자연스럽게 직관적으로.
                         self.Right_Jump.clip_draw(0*(self.Right_Jump.w//3), 0,self.Right_Jump.w//3,self.Right_Jump.h,self.x,self.y)
                     elif (yPos > (JUMPHEIGHT /3)):
                         self.Right_Jump.clip_draw(1*(self.Right_Jump.w//3), 0,self.Right_Jump.w//3,self.Right_Jump.h,self.x,self.y)
                     elif (yPos > (JUMPHEIGHT /3)*0):
                         self.Right_Jump.clip_draw(2*(self.Right_Jump.w//3), 0,self.Right_Jump.w//3,self.Right_Jump.h,self.x,self.y)
-                elif dir == 1:
+                elif self.dir == -1:
                     if(yPos > (JUMPHEIGHT /3)*2):
                         self.Left_Jump.clip_draw(0*(self.Left_Jump.w//3), 0,self.Left_Jump.w//3,self.Left_Jump.h,self.x,self.y)
                     elif (yPos > (JUMPHEIGHT /3)):
                         self.Left_Jump.clip_draw(1*(self.Left_Jump.w//3), 0,self.Left_Jump.w//3,self.Left_Jump.h,self.x,self.y)
                     elif (yPos > (JUMPHEIGHT /3)*0):
                         self.Left_Jump.clip_draw(2*(self.Left_Jump.w//3), 0,self.Left_Jump.w//3,self.Left_Jump.h,self.x,self.y)
-                
             elif FALLING == True: # 점프 이후 떨어지는 애니메이션
-                if dir == 0: 
                     if(yPos > (JUMPHEIGHT /3)*2): # 하강 모션을 3분할 하여 더욱 자연스럽게 직관적으로.
                         self.Right_Fall.clip_draw(0*(self.Right_Fall.w//3), 0,self.Right_Fall.w//3,self.Right_Fall.h,self.x,self.y)
                     elif (yPos > (JUMPHEIGHT /3)):
                         self.Right_Fall.clip_draw(1*(self.Right_Fall.w//3), 0,self.Right_Fall.w//3,self.Right_Fall.h,self.x,self.y)
                     elif (yPos > (JUMPHEIGHT /3)*0):
                         self.Right_Fall.clip_draw(2*(self.Right_Fall.w//3), 0,self.Right_Fall.w//3,self.Right_Fall.h,self.x,self.y)    
-                elif dir == 1:
+                elif self.dir == -1:
                     if(yPos > (JUMPHEIGHT /3)*2):
                         self.Left_Fall.clip_draw(2*(self.Left_Fall.w//3), 0,self.Left_Fall.w//3,self.Left_Fall.h,self.x,self.y)
                     elif (yPos > (JUMPHEIGHT /3)):
                         self.Left_Fall.clip_draw(1*(self.Left_Fall.w//3), 0,self.Left_Fall.w//3,self.Left_Fall.h,self.x,self.y)
                     elif (yPos > (JUMPHEIGHT /3)*0):
                         self.Left_Fall.clip_draw(0*(self.Left_Fall.w//3), 0,self.Left_Fall.w//3,self.Left_Fall.h,self.x,self.y)
-            delay(0.01)
         
     # player 좌표 이동
     def update(self):
