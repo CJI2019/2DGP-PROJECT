@@ -4,10 +4,11 @@ from pico2d import *
 import Main
 
 back = None
+title_background = None
 buttons = []
 count = 0
 
-game_difficulty = 'esay'
+game_difficulty = 'Easy'
 
 class Button:
     NORMAL ,HARD = 0,0 # 각 난이도 1이면 열림 esay is default
@@ -52,21 +53,23 @@ class Button:
         return self.x1,self.y1,self.x2,self.y2
 
 def enter():
-    global back , buttons , count
+    global back , buttons , count ,title_background
+    if title_background == None:
+        title_background = load_image('Title/title_background.png')
     back = load_image('Title/title.png')
     buttons += [Button(300,300,100,40)]
     buttons[0].status = True # start 버튼
     buttons += [Button(300,150,100,40)]
     buttons[1].status = True # quit 버튼
-    buttons += [Button(300,400,100,40)] # esay
-    buttons += [Button(300,300,100,40)] # normal
-    buttons += [Button(300,200,100,40)] # hard
+    buttons += [Button(300,300,100,40)] # esay
+    buttons += [Button(300,200,100,40)] # normal
+    buttons += [Button(300,100,100,40)] # hard
     if( Button.NORMAL == 0):
-        buttons += [Button(300, 300, 100, 40)]  # normal lock
+        buttons += [Button(300, 200, 100, 40)]  # normal lock
     else: count += 1
 
     if (Button.HARD == 0):
-        buttons += [Button(300, 200, 100, 40)]  # hard lock
+        buttons += [Button(300, 100, 100, 40)]  # hard lock
 
 def exit():
     global buttons,count
@@ -115,9 +118,10 @@ def update():
     pass
 
 def draw():
-    global back , button
+    global back , button , title_background
     clear_canvas()
-    back.draw(300,300)
+    title_background.draw(300,300)
+    # back.draw(300,300)
     for button in buttons:
         if button.status == True:
             button.draw()
