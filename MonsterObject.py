@@ -11,13 +11,13 @@ class MONSTER:
     def __init__(self,floorlevel):
         self.left_move_image = load_image('Monster/ghost_left.png')
         self.right_move_image = load_image('Monster/ghost_right.png')
-        self.x , self.y= random.randint(0,600) , 600
+        self.x , self.y= random.randint(100,500) , 600
         self.x1 , self.y1= self.x - (self.left_move_image.w//14) , self.y + (self.left_move_image.h//2)
         self.x2 , self.y2= self.x + (self.left_move_image.w//14) , self.y - (self.left_move_image.h//2)
         self.frame = 0
         self.dir = 0
         self.floorlevel = floorlevel
-    def Draw(self):
+    def draw(self):
         if self.dir == 0:
             self.right_move_image.clip_draw(int(self.frame) * (self.right_move_image.w // 14), 0, self.right_move_image.w // 14, self.right_move_image.h, self.x, self.y)
         elif self.dir == 1:
@@ -65,16 +65,17 @@ class MONSTER:
             self.y2 -= FloorLevelAnimeSpeed
 
 PIXEL_PER_METER = 10.0 / 0.3
-RUN_SPEED_KPH = 15 # km/h
+RUN_SPEED_KPH = 10 # km/h
 RUN_SPEED_MPM = RUN_SPEED_KPH * 1000.0 / 60
 RUN_SPEED_MPS = RUN_SPEED_MPM / 60.0
 RUN_SPEED_PPS = RUN_SPEED_MPS * PIXEL_PER_METER
 
-TIME_PER_ACTION = 0.2
+TIME_PER_ACTION = 0.3
 ACTION_PER_TIME = 1.0 / TIME_PER_ACTION
 FRAMES_PER_ACTION = 14
 
 def explosionDeadmonsters(monsters):
+
     removelist = []
     for idx ,monster in enumerate(monsters):
         if monster.y < GameWindow_HEIGHT and monster.y > 0:
@@ -83,5 +84,6 @@ def explosionDeadmonsters(monsters):
     count = 0
     for i in removelist:
         print('삭제')
+        game_world.remove_object(monsters[i-count])
         del monsters[i-count]
         count += 1

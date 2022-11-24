@@ -1,5 +1,4 @@
 from pico2d import *
-import WallObject
 import game_framework as gf
 import Main
 GameWindow_WITDH ,GameWindow_HEIGHT  = 600 , 600
@@ -99,6 +98,7 @@ class PLAYER:
                     elif (yPos > (JUMPHEIGHT /3)*0):
                         self.Left_Jump.clip_draw(2*(self.Left_Jump.w//3), 0,self.Left_Jump.w//3,self.Left_Jump.h,self.x,self.y)
             elif FALLING == True: # 점프 이후 떨어지는 애니메이션
+                if self.dir == 1:
                     if(yPos > (JUMPHEIGHT /3)*2): # 하강 모션을 3분할 하여 더욱 자연스럽게 직관적으로.
                         self.Right_Fall.clip_draw(0*(self.Right_Fall.w//3), 0,self.Right_Fall.w//3,self.Right_Fall.h,self.x,self.y)
                     elif (yPos > (JUMPHEIGHT /3)):

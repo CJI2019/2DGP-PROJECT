@@ -12,8 +12,8 @@ class WATER:
 
         self.x = GameWindow_WITDH//2
         self.y = -self.image.h+300-500
-        self.speed = 0.0 # speed 가 0이 되면 게임이 오버 된것이다.
-        self.facespeed ,self.faceXpos= 5 , GameWindow_WITDH//2
+        self.speed = 0.5 # speed 가 0이 되면 게임이 오버 된것이다.
+        self.facespeed ,self.faceXpos= 2 , GameWindow_WITDH//2
     def draw(self):
         self.image.draw(self.x,self.y)
         self.face.draw(self.faceXpos,self.y + self.image.h//2 - self.face.h//2)
