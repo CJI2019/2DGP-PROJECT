@@ -1,27 +1,35 @@
 from pico2d import *
 import PlayerObject
-# x = []
-# y = []
 
-x = [433,114] # maptool
-y = [777,1355]
+x = []
+y = []
+
+easyX = [500,124]
+easyY = [2354,625]
+normalX = [143,487,445,132]
+normalY = [792,1130,1410,1728]
+hardX = [138,565,134,106,256,380,145,71]
+hardY = [1226, 1550, 1917, 2628, 4197, 4186, 4533, 4650]
+
 xcount,ycount = 0,0 
 
 class WALL:
     # def __init__(self,x,y): # maptool
-    def __init__(self):
+    def __init__(self): # play
         # global x,y
         global xcount,ycount
         self.image = load_image('wall.png')
         print("생성")
-        self.x = x[xcount]; xcount += 1
-        self.y = y[ycount]; ycount += 1
-        # self.x = x; self.y = y
+        self.x = x[xcount]; xcount += 1 #play
+        self.y = y[ycount]; ycount += 1 #play
+        # self.x = x; self.y = y # maptool
         self.x1 , self.y1= self.x - (self.image.w//2) , self.y + (self.image.h//2)
         self.x2 , self.y2= self.x + (self.image.w//2) , self.y - (self.image.h//2)
         # 화면에 그려질지 말지 플레이어와 부딫히면 그려짐.
-        self.status = False
-    def Draw(self):
+        self.status = False # play
+        # self.status = True # maptool
+
+    def draw(self):
         if self.status:
             self.image.draw(self.x,self.y)
     def update(self):
@@ -50,6 +58,7 @@ class WALL:
                 player.x -= 5; player.x1 -= 5 ; player.x2 -= 5
             elif (self.x1 + self.x2)//2 < (player.x2+player.x1)//2:
                 player.x += 5; player.x1 += 5 ; player.x2 += 5
+            print("중앙")
         elif ((player.x1+player.x2)//2 > self.x1 and (player.x1+player.x2)//2 < self.x2 and # 상
         player.y1 < self.y1 and player.y1 > self.y2):
             if PlayerObject.yPos != 0:

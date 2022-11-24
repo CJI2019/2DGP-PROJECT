@@ -47,31 +47,32 @@ def enter():
     if Game_title.game_difficulty == 'Easy': # Easy 난이도
         Water.speed = 0.25
         monsterSpawntime = 10
-        # FloorObject.x ,FloorObject.y = FloorObject.easyX , FloorObject.easyY
-        # FloorObject.floortype[:] = FloorObject.esayFloor
+        FloorObject.x ,FloorObject.y = FloorObject.easyX , FloorObject.easyY
+        FloorObject.floortype[:] = FloorObject.esayFloor
         WallObject.x,WallObject.y = WallObject.easyX,WallObject.easyY
     elif Game_title.game_difficulty == 'Normal': # Normal 난이도
-        Water.speed = 0.5
+        Water.speed = 0.27
         monsterSpawntime = 8
         FloorObject.x ,FloorObject.y = FloorObject.normalX,FloorObject.normalY
+        FloorObject.floortype[:] = FloorObject.normalFloor
         WallObject.x,WallObject.y = WallObject.normalX,WallObject.normalY
-
     elif Game_title.game_difficulty == 'Hard':  # Hard 난이도
-        Water.speed = 1.0
+        Water.speed = 0.35
         monsterSpawntime = 6
         FloorObject.x ,FloorObject.y = FloorObject.hardX,FloorObject.hardY
+        FloorObject.floortype[:] = FloorObject.hardFloor
         WallObject.x,WallObject.y = WallObject.hardX,WallObject.hardY
 
 
     floors = [FloorObject.FLOOR() for i in range(FloorObject.SizeOfFloor())]
     game_world.add_objects(floors,0)
 
-    # walls = [WallObject.WALL() for i in range(WallObject.SizeOfWall())]
-    walls = []
+    walls = [WallObject.WALL() for i in range(WallObject.SizeOfWall())]
+    # walls = []
     game_world.add_objects(walls,1)
 
-    # Potal = potal.POTAL(floors[-1].xPos,floors[-1].y1+35)
-    Potal = potal.POTAL(floors[-1].xPos,floors[0].y1+35) # 임시 포탈
+    Potal = potal.POTAL(floors[-1].xPos,floors[-1].y1+35)
+    # Potal = potal.POTAL(floors[-1].xPos,floors[0].y1+35) # 임시 포탈
     game_world.add_object(Potal,2)
 
 
@@ -119,7 +120,7 @@ def handle_events():
         elif (event.type, event.key) == (SDL_KEYDOWN, SDLK_ESCAPE):
             game_framework.change_state(Game_title)
         else:
-            maptool_event(event)
+            # maptool_event(event)
             Player.handle_event(event)
 def draw():
     clear_canvas()
@@ -213,7 +214,7 @@ def maptool_event(event):
             print(floor.xPos,end = ',')
         print('\ny 좌표 출력')
         for floor in floors:
-            print(floor.yPos+(100*Player.level),end = ',')
+            print(floor.yPos - FloorObject.floor_changed_value,end = ',')
         print('\n이미지 타입 출력')
         for floor in floors:
             print(floor.floortype,end = ',')
@@ -222,7 +223,7 @@ def maptool_event(event):
             print(wall.x,end = ',')
         print('\ny 좌표 출력')
         for wall in walls:
-            print(wall.y+(100*Player.level),end = ',')
+            print(wall.y - FloorObject.floor_changed_value,end = ',')
         print('\n') # map tool end
 
 PIXEL_PER_METER = 10.0 / 0.3

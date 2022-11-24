@@ -21,6 +21,8 @@ class WATER:
     def update(self):
         global INF
 
+        # return # maptool
+
         self.Crash()
 
         if Main.Skill.skill_state[0] == None :
