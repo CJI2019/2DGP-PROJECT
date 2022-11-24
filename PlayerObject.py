@@ -118,11 +118,19 @@ class PLAYER:
     def update(self):
         global MoveRight, MoveLeft, xPos, yPos, frame, FALLING, JUMPKEYDOWN
         global play
-        if self.stoptime == 0:
-            self.x += xPos * RUN_SPEED_PPS * frame_time
-            self.x = clamp(0+(self.Right_Idle.w//8//2),self.x,GameWindow_WITDH-(self.Right_Idle.w//8//2))
-            self.x1 = self.x - (self.Right_Idle.w//8//2)
-            self.x2 = self.x + (self.Right_Idle.w//8//2)
+
+        self.cur_state.do(self)
+
+        if self.event_que:
+            event = self.event_que.pop()
+            self.cur_state.exit(self, event)
+            try:
+                self.cur_state = next_state[self.cur_state][event]
+            except KeyError:
+                print(f'ERROR: State {self.cur_state.__name__}    Event {event_name[event]}')
+            self.cur_state.enter(self, event)
+            print('event')
+
         # enumerate 는 리스트의 인덱스,원소 형식의 튜플을 넘김
         for idx,wall in enumerate(Main.walls):
             wall.Crash(self,idx,gf.frame_time)
@@ -236,6 +244,76 @@ class PLAYER:
             Main.Skill.skill_godmod()
         elif event.type == SDL_KEYDOWN and event.key == SDLK_d:
             Main.Skill.skill_explosion(Main.monsters)
+    def add_event(self, event):
+        self.event_que.insert(0, event)
+
+class IDLE:
+    @staticmethod
+    def enter(self,event):
+        global xPos
+        xPos = 0
+        print('ENTER IDLE')
+    @staticmethod
+    def exit(self, event):
+        print('EXIT IDLE')
+    @staticmethod
+    def do(self):
+        pass
+    @staticmethod
+    def draw(self):
+        pass
+class RUN:
+    def enter(self, event):
+        global xPos
+        print('ENTER RUN')
+        if event == RD:
+            xPos += 1
+            if self.stoptime != 0:
+                self.stoptime -= 1
+                if self.stoptime == 0:
+                    self.status = None
+                    Main.Skill.nodamegetime = 1
+        elif event == LD:
+            xPos -= 1
+            if self.stoptime != 0:
+                self.stoptime -= 1
+                if self.stoptime == 0:
+                    self.status = None
+                    Main.Skill.nodamegetime = 1
+        elif event == RU:
+            xPos -= 1
+        elif event == LU:
+            xPos += 1
+    def exit(self, event):
+        print('EXIT RUN')
+        self.dir = xPos
+    def do(self):
+        if xPos != 0:
+            self.dir = xPos
+
+        if self.stoptime == 0:
+            self.x += xPos * RUN_SPEED_PPS * gf.frame_time
+            self.x = clamp(0+(self.Right_Idle.w//8//2),self.x,GameWindow_WITDH-(self.Right_Idle.w//8//2))
+            self.x1 = self.x - (self.Right_Idle.w//8//2)
+            self.x2 = self.x + (self.Right_Idle.w//8//2)
+    def draw(self):
+        pass
+
+RD, LD, RU, LU = range(4)
+event_name = ['RD', 'LD', 'RU', 'LU']
+
+key_event_table = {
+    (SDL_KEYDOWN, SDLK_RIGHT): RD,
+    (SDL_KEYDOWN, SDLK_LEFT): LD,
+    (SDL_KEYUP, SDLK_RIGHT): RU,
+    (SDL_KEYUP, SDLK_LEFT): LU
+}
+
+next_state = {
+    IDLE:  {RU: RUN,  LU: RUN,  RD: RUN,  LD: RUN},
+    RUN:   {RU: IDLE, LU: IDLE, RD: IDLE, LD: IDLE},
+}
+
 
 PIXEL_PER_METER = 10.0 / 0.3
 RUN_SPEED_KPH = 30 # km/h
@@ -256,10 +334,6 @@ FALLING = False
 frame = 0
 
 xPos , yPos = 0,0
-
-# dir 0 이면 오른쪽 1 이면 왼쪽을 마지막에 봄.
-dir = 0
-play = True
 
 # 순서대로 방향키 좌, 우 누르면 1 때면 0
 Current_KeyDown_List = [0,0]
