@@ -74,12 +74,13 @@ RUN_SPEED_PPS = RUN_SPEED_MPS * PIXEL_PER_METER
 Player_Floor_Level = 0
 # floor 레벨 변화
 FloorLevelAnimeCount = 0
-# floor 에 따른 애니메이션 속도
-# FloorLevelAnimeSpeed = 10
 floor_changed_value = 0.0
+# floor 변화에 따른 애니메이션 속도
+FloorLevelAnimeSpeed = 0.0
 def FloorChange(Player,floors,Water,walls,monsters,potal):
     global Player_Floor_Level ,FloorLevelAnimeCount,FloorLevelAnimeSpeed
     global floor_changed_value
+
     FloorLevelAnimeSpeed = RUN_SPEED_PPS * game_framework.frame_time
 
     if (Player_Floor_Level != Player.CompliteLevel and FloorLevelAnimeCount == 0):
@@ -125,4 +126,6 @@ def FloorChange(Player,floors,Water,walls,monsters,potal):
             FloorLevelAnimeCount += game_framework.frame_time
             if FloorLevelAnimeCount > 0:
                 FloorLevelAnimeCount = 0
-        
+
+def background_moveup(BackGround,finish_y):
+    return clamp(0, (int)(-floor_changed_value/int(finish_y/GameWindow_HEIGHT)), BackGround.h - GameWindow_HEIGHT - 1)

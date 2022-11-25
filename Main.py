@@ -25,6 +25,10 @@ Skill = None
 Potal = None
 monsters = None
 
+#BackGround screen coodinate set
+BackGround_window_left = 0
+BackGround_window_bottom = 0
+finish_floor_y = 0
 # 타이머 생성
 monsterSpawntime = 10
 timer = monsterSpawntime
@@ -33,14 +37,11 @@ def enter():
     global Player , Skill , Potal , Water
     global floors,walls,monsters
     global monsterSpawntime
-
     timer = monsterSpawntime
     BackGroundHeight = 0
 
     # 객체 생성
     BackGround = load_image("back_2_2000.png")
-    # game_world.add_object(BackGround,0)
-
     Water = WaterObject.WATER()
     game_world.add_object(Water,5)
 
@@ -66,6 +67,8 @@ def enter():
 
     floors = [FloorObject.FLOOR() for i in range(FloorObject.SizeOfFloor())]
     game_world.add_objects(floors,0)
+    global finish_floor_y
+    finish_floor_y = floors[-1].yPos
 
     walls = [WallObject.WALL() for i in range(WallObject.SizeOfWall())]
     # walls = []
@@ -96,13 +99,17 @@ def enter():
 
 def update():
     global BackGround , timer,BackGroundHeight
+    global BackGround_window_left, BackGround_window_bottom
 
 
     # 0.1 씩 배경 이미지 내려가게함.
     BackGroundHeight += 0.05 * RUN_SPEED_PPS * game_framework.frame_time
+
     if BackGround.h - (int)(BackGroundHeight) <= GameWindow_HEIGHT:
         BackGroundHeight = 0
+
     timer -= game_framework.frame_time
+
     if len(floors) > Player.level + 3 and timer < 0:  # 일정 시간 마다 몬스터 생성
         timer = monsterSpawntime
         add_monster()
@@ -111,7 +118,7 @@ def update():
         game_object.update()
 
     FloorObject.FloorChange(Player,floors,Water,walls,monsters,Potal)
-
+    BackGround_window_bottom = FloorObject.background_moveup(BackGround,finish_floor_y)
 def handle_events():
     events = get_events()
     for event in events:
@@ -130,9 +137,14 @@ def draw():
 def draw_world():
     global Player, Skill, Potal, Water, BackGround
     global floors, walls, monsters
+    global BackGround , BackGround_window_left, BackGround_window_bottom
 
-    BackGround.clip_draw(0, (int)(BackGroundHeight), GameWindow_WITDH, GameWindow_HEIGHT
-                         , GameWindow_WITDH // 2, GameWindow_HEIGHT // 2)
+    BackGround.clip_draw_to_origin(BackGround_window_left, BackGround_window_bottom,
+                                   GameWindow_WITDH, GameWindow_HEIGHT,
+                                   0, 0)
+
+    # BackGround.clip_draw(0, (int)(BackGroundHeight), GameWindow_WITDH, GameWindow_HEIGHT
+    #                      , GameWindow_WITDH // 2, GameWindow_HEIGHT // 2)
 
     for game_object in game_world.all_objects():
         game_object.draw()
@@ -164,6 +176,7 @@ def init_game():
     FloorObject.level = 0
     FloorObject.Player_Floor_Level = 0
     FloorObject.FloorLevelAnimeCount = 0
+    FloorObject.floor_changed_value = 0.0
 
     WallObject.xcount, WallObject.ycount = 0, 0
 def add_monster():
