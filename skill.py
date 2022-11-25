@@ -50,7 +50,7 @@ class SKILL:
     def skill_timestop(self):
         if self.cooltime[0] <= 0:
             print("timestop")
-            self.cooltime[0] = 10
+            self.cooltime[0] = 15
             self.skill_state[0] = 'timestop'
     def skill_timestop_update(self):
         if self.skill_state[0] != None:

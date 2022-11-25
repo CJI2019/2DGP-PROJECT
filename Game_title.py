@@ -11,7 +11,7 @@ count = 0
 game_difficulty = 'Easy'
 
 class Button:
-    NORMAL ,HARD = 0,0 # 각 난이도 1이면 열림 esay is default
+    NORMAL ,HARD = 1,1 # 각 난이도 1이면 열림 esay is default
     def __init__(self,x,y,raw,col):
         global count
         self.x ,self.y = x,y

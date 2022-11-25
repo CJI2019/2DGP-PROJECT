@@ -2,6 +2,7 @@ from pico2d import *
 import random
 
 import game_framework
+import Game_title
 
 GameWindow_WITDH , GameWindow_HEIGHT = 600,600
 
@@ -38,9 +39,19 @@ class FLOOR:
         self.floortype = floortype[xcount] # play
         self.image = None
         if(xcount == 0):
-            self.image = load_image("Floor\main_floor_1.png")
+            if Game_title.game_difficulty == 'Easy':
+                self.image = load_image("Floor/main_floor_easy_01.png")
+            elif Game_title.game_difficulty == 'Normal':
+                self.image = load_image("Floor/main_floor_normal_01.png")
+            elif Game_title.game_difficulty == 'Hard':
+                self.image = load_image("Floor/main_floor_hard_01.png")
         else:
-            self.image = load_image("Floor/floor_0{0}.png".format(floortype[xcount])) # play
+            if Game_title.game_difficulty == 'Easy':
+                self.image = load_image("Floor/floor_easy_0{0}.png".format(floortype[xcount]))  # play
+            elif Game_title.game_difficulty == 'Normal':
+                self.image = load_image("Floor/floor_normal_0{0}.png".format(floortype[xcount]))  # play
+            elif Game_title.game_difficulty == 'Hard':
+                self.image = load_image("Floor/floor_hard_0{0}.png".format(floortype[xcount]))  # play
             # self.image = load_image("Floor/floor_0{0}.png".format(floortype)) # maptool
         self.level = level
         level += 1

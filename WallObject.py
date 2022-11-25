@@ -1,4 +1,5 @@
 from pico2d import *
+import Game_title
 import PlayerObject
 
 x = []
@@ -18,7 +19,12 @@ class WALL:
     def __init__(self): # play
         # global x,y
         global xcount,ycount
-        self.image = load_image('wall.png')
+        if Game_title.game_difficulty == 'Easy':
+            self.image = load_image("Floor/wall_easy.png")
+        elif Game_title.game_difficulty == 'Normal':
+            self.image = load_image("Floor/wall_normal.png")
+        elif Game_title.game_difficulty == 'Hard':
+            self.image = load_image("Floor/wall_hard.png")
         print("생성")
         self.x = x[xcount]; xcount += 1 #play
         self.y = y[ycount]; ycount += 1 #play

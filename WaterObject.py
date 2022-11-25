@@ -7,8 +7,8 @@ GameWindow_WITDH ,GameWindow_HEIGHT  = 600 , 600
 INF = 10000000
 class WATER:
     def __init__(self):
-        self.image = load_image('Water_alpha2.png')
-        self.face = load_image('Wateranime_alpha.png')
+        self.image = load_image('Floor/Water_alpha2.png')
+        self.face = load_image('Floor/Wateranime_alpha.png')
 
         self.x = GameWindow_WITDH//2
         self.y = -self.image.h+300-500

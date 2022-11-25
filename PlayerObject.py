@@ -8,21 +8,21 @@ JUMPHEIGHT = 0.17
 JUMPKEYDOWN = False
 class PLAYER:
     def __init__(self):
-        self.Left_Idle = load_image('Player\Player_left_idle.png')
-        self.Right_Idle = load_image('Player\Player_right_idle.png')
+        self.Left_Idle = load_image('Player/Player_left_idle.png')
+        self.Right_Idle = load_image('Player/Player_right_idle.png')
 
-        self.Left_Run = load_image('Player\Player_left_run.png')
-        self.Right_Run = load_image('Player\Player_right_run.png')
+        self.Left_Run = load_image('Player/Player_left_run.png')
+        self.Right_Run = load_image('Player/Player_right_run.png')
 
-        self.Left_Jump = load_image('Player\Player_left_jump.png')
-        self.Right_Jump = load_image('Player\Player_right_jump.png')
-        self.Left_Fall = load_image('Player\Player_left_fall.png')
-        self.Right_Fall = load_image('Player\Player_right_fall.png')
-        self.Right_Crash = load_image('Player\Player_right_crash.png')
-        self.Left_Crash = load_image('Player\Player_left_crash.png')
+        self.Left_Jump = load_image('Player/Player_left_jump.png')
+        self.Right_Jump = load_image('Player/Player_right_jump.png')
+        self.Left_Fall = load_image('Player/Player_left_fall.png')
+        self.Right_Fall = load_image('Player/Player_right_fall.png')
+        self.Right_Crash = load_image('Player/Player_right_crash.png')
+        self.Left_Crash = load_image('Player/Player_left_crash.png')
 
-        self.Right_key = load_image('left_key.png')
-        self.Left_key = load_image('right_key.png')
+        self.Right_key = load_image('Player/left_key.png')
+        self.Left_key = load_image('Player/right_key.png')
         self.x = 300
         self.y = 300
         self.dir = 1

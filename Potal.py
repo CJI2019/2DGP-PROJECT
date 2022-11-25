@@ -5,7 +5,7 @@ import Game_title
 
 class POTAL:
     def __init__(self,x,y):
-        self.image = load_image('Potal.png')
+        self.image = load_image('Floor/Potal.png')
         self.frame = 0
         self.x = x
         self.y = y

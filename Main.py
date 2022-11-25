@@ -41,25 +41,27 @@ def enter():
     BackGroundHeight = 0
 
     # 객체 생성
-    BackGround = load_image("back_2_2000.png")
     Water = WaterObject.WATER()
     game_world.add_object(Water,5)
 
     if Game_title.game_difficulty == 'Easy': # Easy 난이도
+        BackGround = load_image("Title/back_easy.png")
         Water.speed = 0.25
-        monsterSpawntime = 10
+        monsterSpawntime = 8
         FloorObject.x ,FloorObject.y = FloorObject.easyX , FloorObject.easyY
         FloorObject.floortype[:] = FloorObject.esayFloor
         WallObject.x,WallObject.y = WallObject.easyX,WallObject.easyY
     elif Game_title.game_difficulty == 'Normal': # Normal 난이도
+        BackGround = load_image("Title/back_normal.png")
         Water.speed = 0.27
-        monsterSpawntime = 8
+        monsterSpawntime = 6
         FloorObject.x ,FloorObject.y = FloorObject.normalX,FloorObject.normalY
         FloorObject.floortype[:] = FloorObject.normalFloor
         WallObject.x,WallObject.y = WallObject.normalX,WallObject.normalY
     elif Game_title.game_difficulty == 'Hard':  # Hard 난이도
+        BackGround = load_image("Title/back_hard2.png")
         Water.speed = 0.35
-        monsterSpawntime = 6
+        monsterSpawntime = 3
         FloorObject.x ,FloorObject.y = FloorObject.hardX,FloorObject.hardY
         FloorObject.floortype[:] = FloorObject.hardFloor
         WallObject.x,WallObject.y = WallObject.hardX,WallObject.hardY
