@@ -17,6 +17,12 @@ class SKILL:
         self.skill_explosion_anime = load_image('Skill/explosion.png')
         self.skill_explosion_frame = 0
 
+        self.sound_timestop = load_wav('Sound/sound_timestop.wav')
+        self.sound_timestop.set_volume(50)
+        self.sound_godmod = load_wav('Sound/sound_godmod.wav')
+        self.sound_godmod.set_volume(50)
+        self.sound_explosion = load_wav('Sound/sound_explosion.wav')
+        self.sound_explosion.set_volume(60)
 
         # 스킬 쿨타임
         self.cooltime = [0,0,0]
@@ -51,6 +57,7 @@ class SKILL:
         if self.cooltime[0] <= 0:
             print("timestop")
             self.cooltime[0] = 15
+            self.sound_timestop.play()
             self.skill_state[0] = 'timestop'
     def skill_timestop_update(self):
         if self.skill_state[0] != None:
@@ -63,6 +70,7 @@ class SKILL:
     def skill_godmod(self):
         print("godmod")
         if self.cooltime[1] <= 0:
+            self.sound_godmod.play()
             self.cooltime[1] = 10
             self.nodamegetime = 3
             self.skill_state[1] = 'godmod'
@@ -70,6 +78,7 @@ class SKILL:
     def skill_explosion(self,monsters):
         if self.cooltime[2] <= 0:
             print("explosion")
+            self.sound_explosion.play()
             explosionDeadmonsters(monsters)
             self.cooltime[2] = 10
             self.skill_state[2] = 'explosion'

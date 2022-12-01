@@ -15,6 +15,7 @@ import Potal as potal
 
 BackGround = None
 BackGroundHeight = 0
+BackGoundMusic = None
 
 """"""""""""""""""""""""
 Water = None
@@ -33,7 +34,7 @@ finish_floor_y = 0
 monsterSpawntime = 10
 timer = monsterSpawntime
 def enter():
-    global BackGround,BackGroundHeight,timer
+    global BackGround,BackGroundHeight,timer,BackGoundMusic
     global Player , Skill , Potal , Water
     global floors,walls,monsters
     global monsterSpawntime
@@ -51,6 +52,9 @@ def enter():
         FloorObject.x ,FloorObject.y = FloorObject.easyX , FloorObject.easyY
         FloorObject.floortype[:] = FloorObject.esayFloor
         WallObject.x,WallObject.y = WallObject.easyX,WallObject.easyY
+        BackGoundMusic = load_music('Sound/sound_easy.mp3')
+        BackGoundMusic.set_volume(30)
+        BackGoundMusic.repeat_play()
     elif Game_title.game_difficulty == 'Normal': # Normal 난이도
         BackGround = load_image("Title/back_normal.png")
         Water.speed = 0.27
@@ -58,6 +62,9 @@ def enter():
         FloorObject.x ,FloorObject.y = FloorObject.normalX,FloorObject.normalY
         FloorObject.floortype[:] = FloorObject.normalFloor
         WallObject.x,WallObject.y = WallObject.normalX,WallObject.normalY
+        BackGoundMusic = load_music('Sound/sound_normal.mp3')
+        BackGoundMusic.set_volume(30)
+        BackGoundMusic.repeat_play()
     elif Game_title.game_difficulty == 'Hard':  # Hard 난이도
         BackGround = load_image("Title/back_hard2.png")
         Water.speed = 0.35
@@ -65,6 +72,9 @@ def enter():
         FloorObject.x ,FloorObject.y = FloorObject.hardX,FloorObject.hardY
         FloorObject.floortype[:] = FloorObject.hardFloor
         WallObject.x,WallObject.y = WallObject.hardX,WallObject.hardY
+        BackGoundMusic = load_music('Sound/sound_hard.mp3')
+        BackGoundMusic.set_volume(30)
+        BackGoundMusic.repeat_play()
 
 
     floors = [FloorObject.FLOOR() for i in range(FloorObject.SizeOfFloor())]
@@ -161,6 +171,9 @@ def resume():
 
 def init_game():
     global BackGround, BackGroundHeight, timer
+    global BackGoundMusic
+    # BackGoundMusic.stop()
+    del BackGoundMusic
     BackGround = None
     BackGroundHeight = 0
     timer = monsterSpawntime
