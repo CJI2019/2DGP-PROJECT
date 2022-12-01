@@ -55,20 +55,20 @@ class SKILL:
     #   시간 정지 스킬 사용
     def skill_timestop(self):
         if self.cooltime[0] <= 0:
-            print("timestop")
-            self.cooltime[0] = 15
+            # print("timestop")
             self.sound_timestop.play()
+            self.cooltime[0] = 20
             self.skill_state[0] = 'timestop'
     def skill_timestop_update(self):
         if self.skill_state[0] != None:
             self.skill_timestop_duration -= gf.frame_time
         if self.skill_timestop_duration <= 0:
-            print("timestop EXIT")
+            # print("timestop EXIT")
             self.skill_state[0] = None
             self.skill_timestop_duration = 5
 
     def skill_godmod(self):
-        print("godmod")
+        # print("godmod")
         if self.cooltime[1] <= 0:
             self.sound_godmod.play()
             self.cooltime[1] = 10
@@ -77,7 +77,7 @@ class SKILL:
 
     def skill_explosion(self,monsters):
         if self.cooltime[2] <= 0:
-            print("explosion")
+            # print("explosion")
             self.sound_explosion.play()
             explosionDeadmonsters(monsters)
             self.cooltime[2] = 10

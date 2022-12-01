@@ -83,7 +83,7 @@ def explosionDeadmonsters(monsters):
 
     count = 0
     for i in removelist:
-        print('삭제')
+        # print('삭제')
         game_world.remove_object(monsters[i-count])
         del monsters[i-count]
         count += 1

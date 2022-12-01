@@ -47,7 +47,7 @@ def enter():
 
     if Game_title.game_difficulty == 'Easy': # Easy 난이도
         BackGround = load_image("Title/back_easy.png")
-        Water.speed = 0.25
+        Water.speed = 0.3
         monsterSpawntime = 8
         FloorObject.x ,FloorObject.y = FloorObject.easyX , FloorObject.easyY
         FloorObject.floortype[:] = FloorObject.esayFloor
@@ -57,7 +57,7 @@ def enter():
         BackGoundMusic.repeat_play()
     elif Game_title.game_difficulty == 'Normal': # Normal 난이도
         BackGround = load_image("Title/back_normal.png")
-        Water.speed = 0.27
+        Water.speed = 0.35
         monsterSpawntime = 6
         FloorObject.x ,FloorObject.y = FloorObject.normalX,FloorObject.normalY
         FloorObject.floortype[:] = FloorObject.normalFloor
@@ -67,7 +67,7 @@ def enter():
         BackGoundMusic.repeat_play()
     elif Game_title.game_difficulty == 'Hard':  # Hard 난이도
         BackGround = load_image("Title/back_hard2.png")
-        Water.speed = 0.35
+        Water.speed = 0.37
         monsterSpawntime = 3
         FloorObject.x ,FloorObject.y = FloorObject.hardX,FloorObject.hardY
         FloorObject.floortype[:] = FloorObject.hardFloor

@@ -56,7 +56,7 @@ class PLAYER:
         if Main.Skill.nodamegetime >= 0: return
         if (monster.x1 < self.x and self.x < monster.x2 and monster.y2 < self.y and self.y < monster.y1):
             if(self.stoptime == 0):
-                print('몬스터 충돌')
+                # print('몬스터 충돌')
                 self.status = 'monstercrash' ; self.stoptime = 20
     def draw(self):
         global MoveRight, MoveLeft,xPos,yPos,frame,FALLING,JUMPKEYDOWN
@@ -128,7 +128,7 @@ class PLAYER:
             except KeyError:
                 print(f'ERROR: State {self.cur_state.__name__}    Event {event_name[event]}')
             self.cur_state.enter(self, event)
-            print('event')
+            # print('event')
 
         # enumerate 는 리스트의 인덱스,원소 형식의 튜플을 넘김
         for idx,wall in enumerate(Main.walls):
@@ -227,7 +227,7 @@ class PLAYER:
         if (event.type, event.key) in key_event_table:
             key_event = key_event_table[(event.type, event.key)]
             self.add_event(key_event)
-            print('event : ', key_event)
+            # print('event : ', key_event)
 
         elif event.type == SDL_KEYUP: return
         elif event.type == SDL_KEYDOWN and event.key == SDLK_SPACE:
@@ -251,10 +251,11 @@ class IDLE:
     def enter(self,event):
         global xPos
         xPos = 0
-        print('ENTER IDLE')
+        # print('ENTER IDLE')
     @staticmethod
     def exit(self, event):
-        print('EXIT IDLE')
+        # print('EXIT IDLE')
+        pass
     @staticmethod
     def do(self):
         pass
@@ -264,7 +265,7 @@ class IDLE:
 class RUN:
     def enter(self, event):
         global xPos
-        print('ENTER RUN')
+        # print('ENTER RUN')
         if event == RD:
             xPos += 1
             if self.stoptime != 0:
@@ -284,7 +285,7 @@ class RUN:
         elif event == LU:
             xPos += 1
     def exit(self, event):
-        print('EXIT RUN')
+        # print('EXIT RUN')
         self.dir = xPos
     def do(self):
         if xPos != 0:

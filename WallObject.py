@@ -25,7 +25,7 @@ class WALL:
             self.image = load_image("Floor/wall_normal.png")
         elif Game_title.game_difficulty == 'Hard':
             self.image = load_image("Floor/wall_hard.png")
-        print("생성")
+        # print("생성")
         self.x = x[xcount]; xcount += 1 #play
         self.y = y[ycount]; ycount += 1 #play
         # self.x = x; self.y = y # maptool
@@ -46,30 +46,30 @@ class WALL:
         (player.y1+player.y2)//2 < self.y1 and (player.y1+player.y2)//2 > self.y2):
             if PlayerObject.xPos < 0 :
                 player.WallCrash(frame_time); self.status = True
-                print("충돌")
+                # print("충돌")
             elif PlayerObject.xPos == 0 :
                 player.x += 1; player.x1 += 1 ; player.x2 += 1
-                print("충돌")
+                # print("충돌")
         elif (player.x2 > self.x1 and player.x2 < self.x2 and # 우
         (player.y1+player.y2)//2 < self.y1 and (player.y1+player.y2)//2 > self.y2):
             if PlayerObject.xPos > 0 :
                 player.WallCrash(frame_time); self.status = True
-                print("충돌")
+                # print("충돌")
             elif PlayerObject.xPos == 0 :
                 player.x -= 1; player.x1 -= 1 ; player.x2 -= 1
-                print("충돌")
+                # print("충돌")
         elif ((player.x2+player.x1)//2 > self.x1 and (player.x2+player.x1)//2 < self.x2 and # 중앙
         (player.y1+player.y2)//2 < self.y1 and (player.y1+player.y2)//2 > self.y2):
             if (self.x1 + self.x2)//2 > (player.x2+player.x1)//2:
                 player.x -= 5; player.x1 -= 5 ; player.x2 -= 5
             elif (self.x1 + self.x2)//2 < (player.x2+player.x1)//2:
                 player.x += 5; player.x1 += 5 ; player.x2 += 5
-            print("중앙")
+            # print("중앙")
         elif ((player.x1+player.x2)//2 > self.x1 and (player.x1+player.x2)//2 < self.x2 and # 상
         player.y1 < self.y1 and player.y1 > self.y2):
             if PlayerObject.yPos != 0:
                 player.y -= PlayerObject.yPos ; player.y1 -= PlayerObject.yPos ;player.y2 -= PlayerObject.yPos
-            print("충돌")
+            # print("충돌")
             self.status = True
         elif ((player.x1+player.x2)//2 > self.x1 and (player.x1+player.x2)//2 < self.x2 and # 하
         player.y2 < self.y1 and player.y2 > self.y2 and PlayerObject.FALLING):
@@ -78,7 +78,7 @@ class WALL:
             player.y2 = self.y1; player.y = player.y2 + player.Right_Idle.h//2
             player.y1 = player.y + player.Right_Idle.h//2
             player.Wallpoint = index
-            print("충돌")
+            # print("충돌")
             self.status = True
 
 

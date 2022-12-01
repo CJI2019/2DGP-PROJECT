@@ -20,11 +20,8 @@ class WATER:
         self.face.draw(self.faceXpos - 700 -GameWindow_WITDH//2,self.y + self.image.h//2 - self.face.h//2)
     def update(self):
         global INF
-
         # return # maptool
-
         self.Crash()
-
         if Main.Skill.skill_state[0] == None :
             self.y += self.speed
             self.faceXpos += self.facespeed
